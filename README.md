@@ -43,7 +43,8 @@ own or import a whole set:
 
 The editor and the daemon run from the app; there is nothing else to install.
 
-1. Build it (see below) or take the `.dmg` attached to a release.
+1. Build it (see below), or download the `.dmg` from the
+   [latest release](https://github.com/trentster/akp03-control-deck/releases/latest).
 2. Drag **AKP03** into **Applications**.
 3. Open it with **right-click → Open** the first time.
 4. Grant the two permissions it asks for, both to **AKP03**:
