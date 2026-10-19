@@ -29,9 +29,15 @@ you starts doing it.
 
 ## The three pages
 
-| Menus | Icons |
-| --- | --- |
-| ![The Menus page, showing a YouTube menu on key 3](docs/screenshots/menus.png) | ![The Icons page, showing the built-in General set](docs/screenshots/icons.png) |
+Deck, Menus and Icons edit **one draft**. Menus are their own screens, with their own
+labels, buttons and dial claims:
+
+![The Menus page, showing a YouTube menu on key 3](docs/screenshots/menus.png)
+
+Icons are the pictures a key can show. Two sets ship with the app, and you can bring your
+own or import a whole set:
+
+![The Icons page, showing the built-in General set](docs/screenshots/icons.png)
 
 ## Installing
 
