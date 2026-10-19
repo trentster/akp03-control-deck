@@ -1,0 +1,207 @@
+{
+  "id": "general",
+  "name": "General",
+  "description": "General-purpose actions that work in any app",
+  "author": "AKP03 icon pipeline",
+  "version": 1,
+  "licence": "MIT (Phosphor Icons, Copyright (c) 2023 Phosphor Icons)",
+  "tile_sizes": [
+    60,
+    180
+  ],
+  "coverage": 0.65,
+  "icons": [
+    {
+      "name": "copy",
+      "label": "Copy",
+      "section": "editing",
+      "hue": "#2563eb",
+      "action": "copy",
+      "source": "copy-simple-fill"
+    },
+    {
+      "name": "paste",
+      "label": "Paste",
+      "section": "editing",
+      "hue": "#7c3aed",
+      "action": "paste",
+      "source": "clipboard-text-fill"
+    },
+    {
+      "name": "cut",
+      "label": "Cut",
+      "section": "editing",
+      "hue": "#e11d48",
+      "action": "cut",
+      "source": "scissors-fill"
+    },
+    {
+      "name": "undo",
+      "label": "Undo",
+      "section": "editing",
+      "hue": "#f59e0b",
+      "action": "undo",
+      "source": "arrow-u-up-left-fill"
+    },
+    {
+      "name": "redo",
+      "label": "Redo",
+      "section": "editing",
+      "hue": "#059669",
+      "action": "redo",
+      "source": "arrow-u-up-right-fill"
+    },
+    {
+      "name": "save",
+      "label": "Save",
+      "section": "editing",
+      "hue": "#16a34a",
+      "action": "save",
+      "source": "floppy-disk-fill"
+    },
+    {
+      "name": "find",
+      "label": "Find",
+      "section": "editing",
+      "hue": "#0284c7",
+      "action": "find",
+      "source": "magnifying-glass-fill"
+    },
+    {
+      "name": "new",
+      "label": "New",
+      "section": "windows",
+      "hue": "#65a30d",
+      "action": "new",
+      "source": "plus-circle-fill"
+    },
+    {
+      "name": "delete",
+      "label": "Delete",
+      "section": "editing",
+      "hue": "#dc2626",
+      "action": "delete",
+      "source": "trash-fill"
+    },
+    {
+      "name": "mute",
+      "label": "Mute",
+      "section": "media",
+      "hue": "#ea580c",
+      "action": "mute",
+      "source": "speaker-slash-fill"
+    },
+    {
+      "name": "volume",
+      "label": "Volume",
+      "section": "media",
+      "hue": "#0d9488",
+      "action": "volume",
+      "source": "speaker-high-fill"
+    },
+    {
+      "name": "play-pause",
+      "label": "Play / Pause",
+      "section": "media",
+      "hue": "#06b6d4",
+      "action": "play-pause",
+      "source": "play-pause-fill"
+    },
+    {
+      "name": "next",
+      "label": "Next",
+      "section": "media",
+      "hue": "#4f46e5",
+      "action": "next",
+      "source": "skip-forward-fill"
+    },
+    {
+      "name": "previous",
+      "label": "Previous",
+      "section": "media",
+      "hue": "#9333ea",
+      "action": "previous",
+      "source": "skip-back-fill"
+    },
+    {
+      "name": "record",
+      "label": "Record",
+      "section": "media",
+      "hue": "#c026d3",
+      "action": "record",
+      "source": "record-fill"
+    },
+    {
+      "name": "screenshot",
+      "label": "Screenshot",
+      "section": "system",
+      "hue": "#db2777",
+      "action": "screenshot",
+      "source": "camera-fill"
+    },
+    {
+      "name": "folder",
+      "label": "Folder",
+      "section": "windows",
+      "hue": "#d97706",
+      "action": "folder",
+      "source": "folder-fill"
+    },
+    {
+      "name": "browser",
+      "label": "Browser",
+      "section": "windows",
+      "hue": "#38bdf8",
+      "action": "browser",
+      "source": "globe-fill"
+    },
+    {
+      "name": "refresh",
+      "label": "Refresh",
+      "section": "windows",
+      "hue": "#34d399",
+      "action": "refresh",
+      "source": "arrows-clockwise-fill"
+    },
+    {
+      "name": "settings",
+      "label": "Settings",
+      "section": "windows",
+      "hue": "#a78bfa",
+      "action": "settings",
+      "source": "gear-fill"
+    },
+    {
+      "name": "apps",
+      "label": "Apps",
+      "section": "windows",
+      "hue": "#c084fc",
+      "action": "apps",
+      "source": "squares-four-fill"
+    },
+    {
+      "name": "power",
+      "label": "Power",
+      "section": "system",
+      "hue": "#f87171",
+      "action": "power",
+      "source": "power-fill"
+    },
+    {
+      "name": "share",
+      "label": "Share",
+      "section": "system",
+      "hue": "#f472b6",
+      "action": "share",
+      "source": "share-network-fill"
+    },
+    {
+      "name": "zoom",
+      "label": "Zoom",
+      "section": "system",
+      "hue": "#facc15",
+      "action": "zoom",
+      "source": "magnifying-glass-plus-fill"
+    }
+  ]
+}

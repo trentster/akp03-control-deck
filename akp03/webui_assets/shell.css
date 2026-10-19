@@ -1,0 +1,298 @@
+/* The shell: the frame every view is mounted inside.
+
+   The rail and its settings, the save bar and the notice beside it, the permission banner,
+   the live status lamp, the help link, and the deck mirror that reports what the hardware
+   is showing.  None of it belongs to a view - all three views sit inside it - which is why
+   it lives in one file of its own rather than being scattered through the view files.
+
+   Loaded straight after the tokens, so a view's own file can always have the last word.
+*/
+
+/* Final layout guardrails for the first functional web editor pass. */
+.view:not(.active) {
+  display: none !important;
+}
+
+/* ── Icons: a gallery page, not a dropdown ──────────────────────────────────
+   The library is the point of this view, so it gets the width and the keys sit
+   beside it as the "where it goes" column.  Nothing scrolls inside a card. */
+
+/* `display: grid` above would otherwise beat the UA's `[hidden] { display: none }`,
+   which left the deck keys and the content keys showing at the same time. */
+
+/* The device mirror: what the panel is showing, reported by the daemon. */
+.deck-mirror {
+  width: min(500px, 100%);
+  margin: 16px auto 6px;
+  padding: 14px 16px 10px;
+  border: 1px solid #e3dcd0;
+  border-radius: 16px;
+  background: #fdfbf7;
+}
+
+.deck-mirror .mirror-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.deck-mirror .mirror-head b {
+  font-size: 13px;
+  letter-spacing: .02em;
+  color: #2b2620;
+}
+
+.deck-mirror .mirror-layer {
+  font-size: 12px;
+  color: #7a6f60;
+  text-align: right;
+}
+
+.deck-mirror .mirror-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.deck-mirror .mirror-key {
+  margin: 0;
+  width: 66px;
+  text-align: center;
+}
+
+.deck-mirror .mirror-face {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  background: #000;
+  color: var(--surface);
+}
+
+.deck-mirror .mirror-face img {
+  display: block;
+  width: 60px;
+  height: 60px;
+}
+
+.deck-mirror .mirror-text {
+  padding: 2px;
+  font-size: 10px;
+  line-height: 1.15;
+  text-align: center;
+  word-break: break-word;
+}
+
+.deck-mirror .mirror-key.is-selected .mirror-face {
+  box-shadow: 0 0 0 2px var(--key-blue);
+}
+
+.deck-mirror .mirror-key figcaption {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: #9a8f7f;
+}
+
+.deck-mirror .mirror-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* ── Live deck state ─────────────────────────────────────────────────────────
+   The daemon streams connection state and physical control frames; these
+   rules make the browser show the truth and light the matching control. */
+
+.sample.live-status b {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1.2;
+  /* Normal weight: the coloured dot already carries the signal; the words do not
+     need to shout in bold on top of it. */
+  font-weight: 400;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: #c3b8aa;
+  box-shadow: 0 0 0 3px #c3b8aa33;
+  transition: background .15s ease-out, box-shadow .15s ease-out;
+}
+
+/* A key that only sends a shortcut does nothing at all without the macOS
+   Accessibility grant, which no LCD face can show: say it in words, with the one
+   action that fixes it, at the top of the view where the keys are. */
+.permission-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* A grid item stretches to its row by default, and this one shares a row with the
+     deck drawing: three lines of text were being drawn 300px tall to match it, which
+     reads as a broken page rather than a notice.  It keeps its own height. */
+  align-self: start;
+  gap: 14px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid #e0b877;
+  border-left: 4px solid #d79a2b;
+  border-radius: 10px;
+  background: #fdf6e7;
+  color: #5c4a25;
+}
+.permission-banner[hidden] { display: none; }
+.permission-banner b { display: block; font-size: 13px; color: #6b5320; }
+.permission-banner p { margin: 3px 0 0; font-size: 12px; line-height: 1.45; }
+.permission-banner .primary { white-space: nowrap; }
+.permission-banner.is-ok { border-color: #b7dcc6; border-left-color: #2f9e68; background: var(--surface-raised); color: #24503a; }
+.permission-banner.is-ok b { color: #1f6b45; }
+
+.live-status.ok .status-dot { background: #2f9e68; box-shadow: 0 0 0 3px #2f9e6833; }
+.live-status.wait .status-dot { background: #d79a2b; box-shadow: 0 0 0 3px #d79a2b33; }
+.live-status.bad .status-dot { background: #c8483c; box-shadow: 0 0 0 3px #c8483c33; }
+.live-status.ok b { color: #1f6b45; }
+.live-status.bad b { color: #a5372c; }
+
+/* ── Save to the deck ────────────────────────────────────────────────────────
+   The header carries one honest status line plus the two controls that write
+   or discard the draft.  The daemon owns the write; these buttons only ask it
+   to.  Colours reuse the existing warm palette and every state is also text,
+   so the meaning never depends on colour alone. */
+
+.save-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* Quiet by default.  Colour is kept for the two states that need a person -
+   unsaved work and a real failure - so nothing shouts while all is well.
+
+   The look belongs to the state itself, not to the bar it happens to sit in: the deck
+   page's notice is inside `.save-bar`, the icons page's sits on its own, and a rule scoped
+   to the bar left the second one unstyled - it rendered as plain body text at full size. */
+.save-state {
+  color: var(--muted-soft);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.save-state.is-clearing { opacity: 0; }
+
+/* The tones both pages use, so a refusal is red wherever it is said. */
+.save-state.tone-warn { color: #9a6b1c; }
+.save-state.tone-error { color: #b3402f; }
+
+/* Only the bar needs its notice held to one short block; a page has room. */
+.save-bar .save-state { max-width: 30ch; }
+
+/* A hidden control must really be gone: these two are toggled by state, not by CSS. */
+.pill[hidden], .save-bar button[hidden] { display: none; }
+
+#notice[data-tone="dirty"] { color: #9a6b1c; }
+#notice[data-tone="saving"] { color: #4b6b8a; }
+#notice[data-tone="warn"] { color: #9a6b1c; }
+#notice[data-tone="error"] { color: #b3402f; }
+
+/* Small and unobtrusive: two quiet words in the corner, not two blocks of
+   furniture.  Save keeps a trace of teal so it is still findable, and neither
+   button fills until you point at it. */
+.save-bar button {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 3px 8px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted-soft);
+}
+
+.save-bar button.primary {
+  border-color: #cfe0e2;
+  background: transparent;
+  color: #2c6b76;
+}
+
+.save-bar button.primary:hover:not(:disabled) { background: #edf5f6; color: #235964; }
+.save-bar button.quiet:hover:not(:disabled) { background: #f0eae0; color: #57503f; }
+
+.save-bar button:focus-visible { outline: 3px solid #9bd7e2; outline-offset: 2px; }
+
+.save-bar button:disabled {
+  cursor: default;
+  opacity: .5;
+}
+
+.save-bar button[aria-busy="true"] { opacity: .7; }
+
+/* The guide link.  Small, quiet, and out of the way until you look for it. */
+.help-link { display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; margin-left: 9px; border-radius: 50%;
+  border: 1px solid #e4dbd0; background: var(--surface); color: var(--faint);
+  font-size: 12.5px; font-weight: 700; text-decoration: none; vertical-align: 1px;
+  transition: color .12s ease, border-color .12s ease, background .12s ease; }
+.help-link:hover { color: #2f6f69; border-color: #a9cdc8; background: var(--surface); }
+.help-link:focus-visible { outline: 2px solid #b8461c; outline-offset: 2px; }
+
+/* The deck's own settings: a small entry above the deck's state, and a panel that opens
+   above that.  Quieter than the three pages on purpose - it is a place you go rarely,
+   not a fourth workspace - and it holds what belongs to the deck rather than to any
+   control, so it never has to be looked for on a page. */
+/* The entry keeps the connection card company at the foot of the rail: the flexible
+   space goes above this row, so the two sit together rather than the state card
+   drifting away from it. */
+.rail-settings { position: relative; margin-top: auto; }
+
+/* The state card pushes itself to the foot of the rail on its own.  With the settings
+   row already doing that, the two auto margins share the free space and open a gap
+   between them - so here the row above carries it and the card simply follows. */
+.rail-settings + .sample { margin-top: 0; }
+
+.settings-entry { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 11px;
+  border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 13px;
+  font-weight: 700; text-align: left; color: var(--warm-grey-deep); cursor: pointer; }
+.settings-entry:hover { background: #fffdf980; color: var(--ink); }
+.settings-entry[aria-expanded="true"] { background: var(--surface); box-shadow: 0 2px 8px #3d2c1a10; color: var(--ink); }
+.settings-entry:focus-visible { outline: 3px solid #e56c3780; outline-offset: 2px; }
+.settings-glyph { font-size: 14px; line-height: 1; color: var(--faint); }
+
+/* The panel opens out of the rail, so it is as wide as the rail: a fixed 320px spilled over
+   the rail's edge and into the page beside it, sitting on top of the neighbouring pane.  Its
+   left and right edges line up with the rows it opens above. */
+.settings-panel { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); z-index: 40;
+  width: auto; padding: 15px 16px 16px; }
+/* Its own display rule would beat the browser's [hidden] attribute. */
+.settings-panel[hidden] { display: none; }
+
+.settings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+.settings-head b { font-size: 13px; letter-spacing: .03em; }
+.settings-close { display: inline-flex; align-items: center; justify-content: center; width: 22px;
+  height: 22px; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%;
+  background: var(--surface-raised); color: var(--faint); font-size: 12px; font-weight: 700; cursor: pointer; }
+.settings-close:hover { color: var(--warm-grey-deep); border-color: #cdbfac; }
+.settings-close:focus-visible { outline: 2px solid #b8461c; outline-offset: 2px; }
+
+/* Label above the choice: a small panel has no room for both on one line, and the
+   longest choice on this list is a sentence. */
+.settings-panel .screen-row { display: grid; gap: 8px; }
+/* A field label, not a shout: the default bold `b` at full ink read as a heading over a
+   dropdown that already says what it is. */
+.settings-panel .screen-row b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
+.settings-panel select { width: 100%; }

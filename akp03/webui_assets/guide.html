@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Using AKP03 Control</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm; }
+
+  :root {
+    --ink: #33291f;
+    --body: #4d453d;
+    --muted: #8b8177;
+    --faint: #a99e90;
+    --line: #ece4da;
+    --line-strong: #d9cec1;
+    --page: #fffdfa;
+    --card: #ffffff;
+    --tint: #f7fbfa;
+    --tint-warm: #fdf6f3;
+    --teal: #2f7f78;
+    --teal-dark: #2a726c;
+    --warm: #b8462a;
+    --key: #171412;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    padding: 34px 30px 46px;
+    background: var(--page);
+    color: var(--body);
+    font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h1, h2, h3 { color: var(--ink); margin: 0; line-height: 1.25; }
+  p { margin: 0 0 12px; }
+  b, strong { color: var(--ink); }
+  code, .mono {
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+  }
+
+  /* ── cover ─────────────────────────────────────────────────────────── */
+  .cover { border-bottom: 2px solid var(--line); padding-bottom: 22px; margin-bottom: 26px; }
+  .eyebrow {
+    margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--teal);
+  }
+  .cover h1 { font-size: 34px; letter-spacing: -.02em; margin-bottom: 8px; }
+  .lede { font-size: 16px; color: var(--muted); max-width: 60ch; margin-bottom: 18px; }
+
+  .ruleofthumb { margin: 0; padding: 0; list-style: none; }
+  .ruleofthumb li {
+    display: inline-block; margin: 0 8px 8px 0; padding: 9px 15px;
+    background: var(--tint); border: 1px solid #d8e8e4; border-radius: 999px;
+    font-size: 13px; color: var(--teal-dark);
+  }
+  .ruleofthumb b { color: var(--teal-dark); }
+
+  /* ── sections ──────────────────────────────────────────────────────── */
+  section { margin-bottom: 30px; }
+  .part {
+    margin: 0 0 16px; font-size: 23px; letter-spacing: -.01em;
+    padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+  .part .num {
+    display: inline-block; width: 30px; height: 30px; margin-right: 10px;
+    background: var(--ink); color: var(--page); border-radius: 9px;
+    font-size: 15px; line-height: 30px; text-align: center; vertical-align: 4px;
+  }
+  .section-note { color: var(--muted); font-size: 14px; margin: -6px 0 18px; max-width: 66ch; }
+
+  /* A table, not inline-blocks: WeasyPrint puts one inline-block per page, which
+     scattered the cards down eight sparse pages.  Cells share a row properly. */
+  .row { display: table; width: 100%; border-spacing: 9px 9px; }
+  .card {
+    display: table-cell; vertical-align: top; width: 50%;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 18px 18px 16px;
+  }
+  .card h3 { font-size: 16px; margin-bottom: 6px; }
+  .card p { font-size: 14px; margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card .art { margin: 0 0 12px; }
+  .card .art svg { display: block; width: 100%; height: auto; }
+
+  .tag {
+    display: inline-block; margin: 0 0 8px; padding: 3px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .tag.good { background: #eaf5f3; color: #276b65; }
+  .tag.bad { background: #fbeae4; color: #9c3c22; }
+
+  ul.ticks { margin: 0; padding-left: 0; list-style: none; }
+  ul.ticks li { position: relative; padding-left: 22px; margin-bottom: 7px; font-size: 14px; }
+  ul.ticks li:before { position: absolute; left: 0; top: 0; font-weight: 700; }
+  ul.tick li:before { content: "✓"; color: var(--teal); }
+  ul.cross li:before { content: "✕"; color: var(--warm); }
+
+  .checklist {
+    background: var(--tint); border: 1px solid #d8e8e4; border-radius: 14px;
+    padding: 18px; margin-top: 4px;
+  }
+  .checklist h3 { font-size: 15px; margin-bottom: 12px; }
+  .checklist .cols { display: table; width: 100%; border-spacing: 9px 0; }
+  .checklist .col { display: table-cell; vertical-align: top; width: 50%; }
+
+  pre {
+    margin: 0; padding: 14px 15px; background: #fbf8f4; border: 1px solid var(--line);
+    border-radius: 11px; overflow-wrap: break-word; white-space: pre-wrap;
+    font-size: 11.5px; line-height: 1.55; color: #3d3630;
+  }
+  pre .k { color: var(--teal-dark); font-weight: 700; }
+  pre .c { color: var(--faint); }
+
+  .fieldlist { margin: 12px 0 0; }
+  .fieldlist div { margin-bottom: 7px; font-size: 13.5px; }
+  .fieldlist .name { color: var(--teal-dark); font-weight: 700; font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; }
+  .fieldlist .need { color: var(--warm); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-left: 6px; }
+  .fieldlist .opt { color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-left: 6px; }
+
+  footer {
+    margin-top: 34px; padding-top: 20px; border-top: 2px solid var(--line);
+    font-size: 13.5px; color: var(--muted);
+  }
+  footer b { color: var(--ink); }
+
+  @media (max-width: 700px) {
+    body { padding: 20px 16px 30px; }
+    .row, .checklist .cols { display: block; }
+    .card, .checklist .col { display: block; width: 100%; }
+    .cover h1 { font-size: 27px; }
+  }
+  @media print {
+    body { padding: 0; max-width: none; }
+    .card { break-inside: avoid; }
+    section { break-inside: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <p class="eyebrow">AKP03 Control · guide</p>
+  <h1>Using AKP03 Control</h1>
+  <p class="lede">What the deck can do, and how to set it up. The last two parts are for drawing
+     your own icons and building a set to hand to someone else. Nothing here is guesswork — these
+     are the rules the app itself follows.</p>
+  <ul class="ruleofthumb">
+    <li><a href="#deck"><b>1</b> The deck</a></li>
+    <li><a href="#menus"><b>2</b> Menus</a></li>
+    <li><a href="#icons"><b>3</b> One icon</a></li>
+    <li><a href="#sets"><b>4</b> A set</a></li>
+  </ul>
+</header>
+
+<!-- ────────────────────────────────────────────────────────────────── -->
+<section id="deck">
+  <h2 class="part"><span class="num">1</span>The deck</h2>
+  <p class="section-note">Twelve controls: six keys across the glass, three buttons
+     under them, and three dials at the side.</p>
+
+  <div class="row">
+    <div class="card">
+      <h3>Choose a control, then choose what it does</h3>
+      <p>Click any control on the drawing. The panel on the right answers for the one you
+         picked: a key takes a label, an action, a picture, and a response; a dial takes one
+         answer per part of it, so its press and each way it turns are set separately.</p>
+      <p>Nothing you do is real until you press <b>Save to deck</b>. Until then it is a draft you
+         can put back with <b>Discard changes</b>, which appears as soon as there is something
+         to put back.</p>
+    </div>
+
+    <div class="card">
+      <h3>Response: tapped, or held</h3>
+      <p>Most keys fire the moment you tap them. A key can instead be <b>held while pressed</b> —
+         useful for push-to-talk, or anything you want to keep down. A hold has a cut-off, so a
+         key held down on a busy desk does not stay down for ever.</p>
+      <p>A dial's turn cannot be held: a notch has no release, so there is nothing to wait for.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>Testing without saving</h3>
+      <p><b>Test it now</b> sends the action straight away so you can see it work before it
+         belongs to the deck. It never saves anything.</p>
+    </div>
+
+    <div class="card">
+      <h3>What the deck is showing</h3>
+      <p><b>On the deck now</b> is what the glass holds at this moment, drawn by the deck's own
+         renderer rather than a second copy of it — so a label that will be cut short up there
+         looks cut short down here too.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>When nobody is using it</h3>
+      <p>The keys can go dark after a while with no key, button or dial touched, which is what
+         spares the panel a fixed bright picture. Any touch wakes the deck, and it comes back
+         exactly as it was — the same labels and pictures, a menu still open where you left it.</p>
+      <p>How long it waits is set in <b>Settings</b> — the small entry just above the deck's
+         state at the bottom of the rail. <b>Off</b> keeps the keys lit.</p>
+    </div>
+
+    <div class="card">
+      <h3>If the deck goes quiet</h3>
+      <p>macOS reads the deck's buttons and types the shortcuts, so the app needs two permissions:
+         <b>Input Monitoring</b> and <b>Accessibility</b>. Both are granted to <b>AKP03</b> in
+         System Settings → Privacy &amp; Security, then the app is quit and opened again.</p>
+      <p>Accessibility missing is announced on the page, with a strip that asks macOS for you. A
+         newer build counts as a new app, so the two entries have to be removed and added
+         back.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────────────────────────── -->
+<section id="menus">
+  <h2 class="part"><span class="num">2</span>Menus</h2>
+  <p class="section-note">A menu puts up to six of your own buttons on the keys, and you can
+     always get back out of it.</p>
+
+  <div class="row">
+    <div class="card">
+      <h3>Opening one</h3>
+      <p>A key set to open a menu shows <b>menu ▸</b> on its tile. While that menu is up, the six
+         keys are its buttons instead of the deck's, and the drawing on the Menus page changes to
+         show them.</p>
+      <p>Everything a menu shows is set on the <b>Menus</b> page, not on the Deck page.</p>
+    </div>
+
+    <div class="card">
+      <h3>Getting back out — always</h3>
+      <p>The small left dial goes back a level, and from the top page of a menu it leaves the menu
+         altogether. That is fixed, on purpose: it is the one control that is never given away,
+         because a menu you cannot leave is a brick.</p>
+      <p>The big dial turns to move the highlight and presses to select. A menu that takes the big
+         dial for something else takes it whole, so the parts the menu leaves empty simply do
+         nothing rather than surprising you.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>What a menu can take over</h3>
+      <p>The three buttons under the keys, and the big dial and the right dial. Each slot left
+         empty keeps its ordinary job, so a menu that claims nothing changes nothing.</p>
+      <p>One part of a menu is a good place for something that menu is about: turn the big dial to
+         work the volume while you are in the menu that deals with sound.</p>
+    </div>
+
+    <div class="card">
+      <h3>Renaming and deleting</h3>
+      <p>Both are on the menu's own page, and both are staged: a deleted menu is not gone from the
+         deck until you press <b>Save to deck</b>, and <b>Discard changes</b> puts it back.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────────────────────────── -->
+<section id="icons">
+  <h2 class="part"><span class="num">3</span>One icon</h2>
+  <p class="section-note">The deck's keys are 60 by 60 pixels. That sounds tiny, and it is —
+     so draw big and let it shrink. Every rule below comes from that one number.</p>
+
+  <div class="row">
+
+    <div class="card">
+      <h3>Draw at 180×180</h3>
+      <p>Design on a square canvas of <b>180×180</b>. Keep the artwork inside the middle
+         <b>144 pixels</b>, leaving about <b>18px of margin</b> all round so nothing is jammed
+         against the edge of a key.</p>
+      <div class="art">
+        <svg viewBox="0 0 420 192" role="img" aria-label="A 180 pixel canvas with an 18 pixel safe margin, beside the 60 pixel key it becomes.">
+          <!-- 180 canvas -->
+          <rect x="8" y="12" width="150" height="150" rx="13" fill="#fffdfa" stroke="#d9cec1"/>
+          <rect x="23" y="27" width="120" height="120" rx="9" fill="none" stroke="#2f7f78" stroke-width="1.4" stroke-dasharray="5 4"/>
+          <rect x="53" y="53" width="60" height="60" rx="12" fill="#2f7f78"/>
+          <circle cx="83" cy="83" r="13" fill="#fffdfa"/>
+          <text x="83" y="152" text-anchor="middle" font-size="11" fill="#8b8177" font-family="sans-serif">canvas 180</text>
+          <text x="83" y="176" text-anchor="middle" font-size="10" fill="#2f7f78" font-family="sans-serif">margin 18</text>
+
+          <text x="176" y="92" text-anchor="middle" font-size="19" fill="#a99e90" font-family="sans-serif">→</text>
+
+          <!-- 60 key -->
+          <rect x="196" y="42" width="60" height="60" rx="11" fill="#171412"/>
+          <rect x="209" y="55" width="34" height="34" rx="7" fill="#2f7f78"/>
+          <circle cx="226" cy="72" r="7" fill="#fffdfa"/>
+          <text x="226" y="124" text-anchor="middle" font-size="11" fill="#8b8177" font-family="sans-serif">the key: 60</text>
+
+          <!-- ruler -->
+          <line x1="196" y1="30" x2="256" y2="30" stroke="#a99e90" stroke-width="1"/>
+          <line x1="196" y1="26" x2="196" y2="34" stroke="#a99e90" stroke-width="1"/>
+          <line x1="256" y1="26" x2="256" y2="34" stroke="#a99e90" stroke-width="1"/>
+          <text x="280" y="34" font-size="11" fill="#8b8177" font-family="sans-serif">what the deck shows</text>
+          <text x="280" y="52" font-size="11" fill="#8b8177" font-family="sans-serif">it shrinks 3×, so draw simply</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Transparent PNG</h3>
+      <span class="tag good">right</span>
+      <div class="art">
+        <svg viewBox="0 0 200 114" role="img" aria-label="A transparent PNG lets the black key face show through.">
+          <defs>
+            <pattern id="check" width="12" height="12" patternUnits="userSpaceOnUse">
+              <rect width="12" height="12" fill="#f2ece4"/>
+              <rect width="6" height="6" fill="#e4dbd0"/>
+              <rect x="6" y="6" width="6" height="6" fill="#e4dbd0"/>
+            </pattern>
+          </defs>
+          <rect x="8" y="10" width="76" height="76" rx="12" fill="#171412"/>
+          <rect x="24" y="26" width="44" height="44" rx="9" fill="#fffdfa"/>
+          <text x="46" y="108" text-anchor="middle" font-size="10" fill="#8b8177" font-family="sans-serif">transparent</text>
+
+          <rect x="116" y="10" width="76" height="76" rx="12" fill="#171412"/>
+          <rect x="123" y="17" width="62" height="62" rx="5" fill="#ffffff"/>
+          <rect x="140" y="33" width="28" height="28" rx="6" fill="#fffdfa"/>
+          <text x="154" y="108" text-anchor="middle" font-size="10" fill="#8b8177" font-family="sans-serif">white box (JPEG)</text>
+        </svg>
+      </div>
+      <p>Save as <b>PNG with transparency</b>. It's what lets the black key face show through
+         around your shape. JPEG has no transparency, so it arrives as a white square.</p>
+      <p>No SVG: icons are pictures, so raster only.</p>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>Bold shapes only</h3>
+      <p>Shrink a thin line to 60 pixels and it turns to mush. Keep strokes at <b>8 pixels or
+         more on the 180 canvas</b> — that's about 3 pixels once the deck has it.</p>
+      <div class="art">
+        <svg viewBox="0 0 260 116" role="img" aria-label="Two keys side by side: one with bold strokes that survives shrinking, one with hairlines that disappears.">
+          <rect x="10" y="14" width="72" height="72" rx="12" fill="#171412"/>
+          <rect x="34" y="30" width="24" height="40" rx="6" fill="none" stroke="#fffdfa" stroke-width="9"/>
+          <rect x="34" y="52" width="24" height="9" fill="#fffdfa"/>
+          <text x="46" y="104" text-anchor="middle" font-size="10" fill="#2f7f78" font-family="sans-serif">8px → holds</text>
+
+          <rect x="130" y="14" width="72" height="72" rx="12" fill="#171412"/>
+          <rect x="154" y="30" width="24" height="40" rx="3" fill="none" stroke="#8d8377" stroke-width="1.2"/>
+          <rect x="154" y="52" width="24" height="1.2" fill="#8d8377"/>
+          <text x="166" y="104" text-anchor="middle" font-size="10" fill="#b8462a" font-family="sans-serif">1.5px → vanishes</text>
+        </svg>
+      </div>
+      <p>No text on the icon either — at 60 pixels a letter is a smudge. If it needs a word,
+         it needs a different picture.</p>
+    </div>
+
+    <div class="card">
+      <h3>Light colours</h3>
+      <p>The key face is <b>black</b>, and your picture is drawn exactly as you saved it —
+         nothing is recoloured, nothing is inverted. Light art reads; dark art disappears
+         into the face.</p>
+      <div class="art">
+        <svg viewBox="0 0 260 116" role="img" aria-label="Light artwork on a black key reads clearly; dark artwork on the same black face is invisible.">
+          <rect x="10" y="14" width="72" height="72" rx="12" fill="#171412"/>
+          <circle cx="46" cy="50" r="17" fill="#f6e7c8"/>
+          <path d="M46 24 v8 M46 68 v8 M20 50 h8 M64 50 h8" stroke="#f6e7c8" stroke-width="6" stroke-linecap="round"/>
+          <text x="46" y="104" text-anchor="middle" font-size="10" fill="#2f7f78" font-family="sans-serif">reads</text>
+
+          <rect x="130" y="14" width="72" height="72" rx="12" fill="#171412"/>
+          <circle cx="166" cy="50" r="17" fill="#241f1c"/>
+          <path d="M166 24 v8 M166 68 v8 M140 50 h8 M184 50 h8" stroke="#241f1c" stroke-width="6" stroke-linecap="round"/>
+          <text x="166" y="104" text-anchor="middle" font-size="10" fill="#b8462a" font-family="sans-serif">disappears</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>Name the file</h3>
+      <p>The file's name becomes the icon's name in the editor. Lowercase with hyphens is
+         easiest to read.</p>
+      <div class="art">
+        <svg viewBox="0 0 320 92" role="img" aria-label="A file name on the left becomes an icon name in the editor on the right.">
+          <rect x="6" y="18" width="132" height="34" rx="9" fill="#fbf8f4" stroke="#ece4da"/>
+          <text x="18" y="40" font-size="12" fill="#3d3630" font-family="monospace">full-screen.png</text>
+          <text x="150" y="40" text-anchor="middle" font-size="15" fill="#a99e90" font-family="sans-serif">→</text>
+          <rect x="168" y="18" width="146" height="34" rx="9" fill="#fff" stroke="#d8e8e4"/>
+          <text x="180" y="40" font-size="12.5" fill="#276b65" font-family="sans-serif">Full Screen</text>
+          <text x="18" y="74" font-size="10.5" fill="#a99e90" font-family="sans-serif">spanner.png → “Spanner”, find.png → “Find”</text>
+        </svg>
+      </div>
+      <p>Anything you don't like can be renamed later, on the Icons page.</p>
+    </div>
+
+    <div class="card">
+      <h3>How many, how big</h3>
+      <p>About <b>24 icons</b> to a set keeps the list and the picker easy to scan. The app
+         takes up to 2000, because a set imported from an icon library is a library; one you
+         build by hand is happier small, since a set you scroll through is a set you stop
+         using.</p>
+      <p>File size is rarely a problem: keep each picture <b>under a few hundred KB</b> and
+         you'll never meet the limit. The app keeps a 180 pixel copy for its own previews and
+         makes the 60 pixel one for the deck.</p>
+    </div>
+
+  </div>
+
+  <div class="checklist">
+    <h3>Before you upload — the one-icon checklist</h3>
+    <div class="cols">
+      <div class="col">
+        <ul class="ticks tick">
+          <li>Square canvas, <b>180×180</b></li>
+          <li><b>PNG</b> with transparency</li>
+          <li>Art inside the middle <b>144px</b></li>
+          <li>Strokes <b>8px or more</b></li>
+          <li><b>Light</b> colours</li>
+          <li>Named the way you want it read</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="ticks cross">
+          <li>Letters or numbers on the art</li>
+          <li>Hairlines, outlines, fine detail</li>
+          <li>Dark art on the black face</li>
+          <li>JPEG, or a photo with a background</li>
+          <li>Spilling past the margin</li>
+          <li>More than about 24 in a set</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────────────────────────────────────── -->
+<section id="sets">
+  <h2 class="part"><span class="num">4</span>A set</h2>
+  <p class="section-note">A set is a folder of icons with a small manifest that names them.
+     Zip the folder, hand it over, and it becomes a set of its own in the sidebar — with your
+     name on it.</p>
+
+  <div class="row">
+
+    <div class="card">
+      <h3>The zip</h3>
+      <p>One zip, one folder inside it. The folder's name is the set's <b>id</b>: lowercase
+         letters, digits and hyphens, and it must match the <code>id</code> inside
+         <code>pack.json</code>.</p>
+      <div class="art">
+        <svg viewBox="0 0 400 176" role="img" aria-label="The structure of a pack: workshop.zip containing a workshop folder with pack.json and two PNG tiles.">
+          <rect x="6" y="8" width="150" height="34" rx="9" fill="#fbf8f4" stroke="#d9cec1"/>
+          <text x="18" y="30" font-size="12" fill="#3d3630" font-family="monospace">workshop.zip</text>
+
+          <path d="M64 44 v16 h-30" stroke="#d9cec1" stroke-width="1.4" fill="none"/>
+          <path d="M64 60 h30" stroke="#d9cec1" stroke-width="1.4" fill="none"/>
+
+          <rect x="96" y="50" width="150" height="34" rx="9" fill="#f7fbfa" stroke="#8fc4bd"/>
+          <text x="108" y="72" font-size="12" fill="#276b65" font-family="monospace">workshop/</text>
+
+          <path d="M171 84 v14 h-58" stroke="#d9cec1" stroke-width="1.4" fill="none"/>
+          <path d="M171 98 h58" stroke="#d9cec1" stroke-width="1.4" fill="none"/>
+          <path d="M171 98 v14" stroke="#d9cec1" stroke-width="1.4" fill="none"/>
+
+          <rect x="112" y="98" width="124" height="28" rx="8" fill="#fff" stroke="#ece4da"/>
+          <text x="122" y="117" font-size="11.5" fill="#3d3630" font-family="monospace">pack.json</text>
+
+          <rect x="112" y="132" width="124" height="28" rx="8" fill="#fff" stroke="#ece4da"/>
+          <text x="122" y="151" font-size="11.5" fill="#3d3630" font-family="monospace">find.60.png</text>
+
+          <rect x="246" y="98" width="140" height="28" rx="8" fill="#fff" stroke="#ece4da"/>
+          <text x="256" y="117" font-size="11.5" fill="#3d3630" font-family="monospace">find.180.png</text>
+
+          <text x="246" y="151" font-size="10.5" fill="#a99e90" font-family="sans-serif">two tiles per icon,</text>
+          <text x="246" y="166" font-size="10.5" fill="#a99e90" font-family="sans-serif">named after it</text>
+        </svg>
+      </div>
+      <p><b>Yes — zip it.</b> Loose files, or a zip with everything at the top level, will be
+         refused.</p>
+    </div>
+
+    <div class="card">
+      <h3>pack.json</h3>
+      <p>Three lines of facts about the set, then one entry per icon.</p>
+      <pre>{
+  <span class="k">"id"</span>: "workshop",
+  <span class="k">"name"</span>: "Workshop",
+  <span class="k">"author"</span>: "Your name",
+  <span class="k">"licence"</span>: "CC BY 4.0",
+  <span class="k">"description"</span>: "Bench icons.",
+  <span class="k">"icons"</span>: [
+    {
+      <span class="k">"name"</span>: "find",
+      <span class="k">"label"</span>: "Find",
+      <span class="k">"hue"</span>: "#2f7f78"
+    }
+  ]
+}</pre>
+      <div class="fieldlist">
+        <div><span class="name">id</span><span class="need">required</span> — must match the folder's name</div>
+        <div><span class="name">name</span><span class="need">required</span> — what the sidebar shows. <b>The zip's file name is only a fallback if this is missing.</b></div>
+        <div><span class="name">author</span><span class="need">required</span> — shown on the set's card</div>
+        <div><span class="name">licence</span><span class="need">required</span> — also shown on the card</div>
+        <div><span class="name">description</span><span class="opt">optional</span></div>
+        <div><span class="name">name</span>, <span class="name">label</span> per icon<span class="need">required</span> — <code>name</code> is lowercase with hyphens and must be unique; <code>label</code> is the readable one</div>
+        <div><span class="name">hue</span> per icon<span class="opt">optional</span> — a <code>#rrggbb</code> tint</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h3>Two tiles per icon</h3>
+      <p>Every icon carries the same picture at two sizes, both <b>transparent PNG</b>:
+         <b>60×60</b> for the deck and <b>180×180</b> for the editor. Each one must be
+         <b>under 512KB</b>.</p>
+      <div class="art">
+        <svg viewBox="0 0 320 130" role="img" aria-label="The same icon supplied at 60 by 60 and 180 by 180 pixels.">
+          <rect x="26" y="24" width="60" height="60" rx="11" fill="#171412"/>
+          <rect x="40" y="38" width="32" height="32" rx="7" fill="#2f7f78"/>
+          <circle cx="56" cy="54" r="7" fill="#fffdfa"/>
+          <text x="56" y="102" text-anchor="middle" font-size="11" fill="#276b65" font-family="monospace">find.60.png</text>
+
+          <text x="118" y="60" text-anchor="middle" font-size="15" fill="#a99e90" font-family="sans-serif">+</text>
+
+          <rect x="146" y="6" width="96" height="96" rx="17" fill="#171412"/>
+          <rect x="168" y="28" width="52" height="52" rx="11" fill="#2f7f78"/>
+          <circle cx="194" cy="54" r="11" fill="#fffdfa"/>
+          <text x="194" y="120" text-anchor="middle" font-size="11" fill="#276b65" font-family="monospace">find.180.png</text>
+
+          <text x="266" y="60" font-size="10.5" fill="#a99e90" font-family="sans-serif">exactly</text>
+          <text x="266" y="74" font-size="10.5" fill="#a99e90" font-family="sans-serif">these sizes</text>
+        </svg>
+      </div>
+      <p>If you'd rather not make two sizes by hand, that's fine: give one square PNG of
+         <b>180 or more</b> and the app will make both.</p>
+    </div>
+
+    <div class="card">
+      <h3>What the app checks</h3>
+      <ul class="ticks tick">
+        <li><code>pack.json</code> is there and readable</li>
+        <li><code>id</code> matches the folder and is lowercase with hyphens</li>
+        <li>Icon names are unique inside the set</li>
+        <li>Every file the manifest names actually exists</li>
+        <li>Tiles are the right size, transparent, and under 512KB</li>
+        <li><b>Up to 2000</b> icons, <b>20 sets</b> of your own</li>
+        <li>Archives over 25MB are refused</li>
+        <li><code>__MACOSX/</code> and <code>.DS_Store</code> are ignored</li>
+      </ul>
+      <p>If something's missing, the whole import is refused — you never end up with half a
+         set. And if the id clashes with <b>General</b> or <b>macOS</b>, it's imported as
+         <code>workshop-2</code> and the app says so. Shipped sets are never replaced.</p>
+    </div>
+
+  </div>
+
+  <div class="checklist">
+    <h3>Before you zip — the set checklist</h3>
+    <div class="cols">
+      <div class="col">
+        <ul class="ticks tick">
+          <li>One folder, named as the <code>id</code></li>
+          <li><code>pack.json</code> with <code>id</code>, <code>name</code>, <code>author</code>, <code>licence</code></li>
+          <li>Every icon listed in <code>icons</code></li>
+          <li>Both tiles for each icon, 60 and 180</li>
+          <li>Transparent PNG throughout</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="ticks cross">
+          <li>Emoji in the id, spaces, capitals</li>
+          <li>Duplicate icon names</li>
+          <li>A manifest naming files you didn't include</li>
+          <li>An empty <code>licence</code> — it's shown on the card</li>
+          <li>Naming it <code>general</code> or <code>macos</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><b>Where it goes.</b> On the Icons page: <b>New set…</b> makes an empty set of your own to
+     start from. <b>Add icons…</b> takes your pictures one at a time (or a batch — drop them on
+     the page), and they land in whichever of your sets is open. <b>Import a set…</b> takes a zip
+     built to the rules above, and it becomes a set of its own with your name on the card.
+     <b>Export…</b> on any set — including the ones that ship with the app — hands you that zip to
+     keep or pass on. The sets that ship with the app stay read-only and are never overwritten.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,427 @@
+/* ── Rehoused from overrides.css ────────────────────────────────────────────
+   The deck page's own layout, which is not the drawing but the column it sits
+   in: the two-column grid the mirror and the panel share, its one narrow-window
+   step, and the rings that show a physical press.  Above this file's own rules,
+   which go on deciding what they always decided. */
+
+
+/* The deck page's own layout: two panes, the drawing and the selected control.  The
+   column width here is the one that was in effect before this move - flow.css carried
+   the winning rule, because it loads after overrides.css, and this file loads after
+   flow.css, so the winner had to be brought here rather than assumed. */
+#deck.active {
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) 420px;
+  min-height: 0;
+}
+
+/* A physical press lights its on-screen control.  Keys use a gold ring and a
+   brightness lift, distinct from the orange "selected" outline, so a press and
+   a selection are never confused. */
+#deck .key.pressed {
+  box-shadow: 0 0 0 3px #ffd166, 0 0 20px 3px #ffb020cc;
+  filter: brightness(1.22) saturate(1.08);
+}
+
+#deck .button-cap.pressed {
+  background: radial-gradient(circle at 35% 30%, #fff0c2, #f2a52c);
+  box-shadow: 0 0 0 4px #ffd16699, 0 0 22px 4px #ffb020e6;
+}
+
+#deck .dial.pressed {
+  box-shadow: inset 0 0 0 15% #6b635a, 0 2px 0 #211e1b, 0 0 0 4px #ffd16699, 0 0 24px 5px #ffb020e6;
+  filter: brightness(1.2);
+}
+
+/* ── Rehoused from overrides.css ────────────────────────────────────────────
+   These rules sit above this file's own rules, which is where they were in effect
+   before: this file loads after overrides.css, so its own rules still win what they
+   won.  They do now beat every sheet that loads between the two - check what they
+   compete with before reordering this block, because no test will stop you. */
+
+
+#deck .stage {
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 22px;
+}
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.slot .tag {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.slot b {
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.slot small {
+  color: #70685f;
+  font-size: 13px;
+  line-height: 1.25;
+}
+@media (max-height: 700px) {
+  #deck .stage {
+    padding-top: 20px;
+    padding-bottom: 12px;
+  }
+
+  #deck .stage h1 {
+    font-size: 24px;
+  }
+
+  /* Tighter key grid so the longest key title still fits whole at this width. */
+  #deck .keys {
+    gap: 12px;
+    padding: 4px;
+  }
+
+  #deck .key {
+    padding: 20px 4px 5px;
+  }
+
+  #deck .key b {
+    font-size: 10px;
+  }
+
+  #deck .key small {
+    font-size: 9px;
+  }
+}
+
+@media (max-height: 620px) {
+  #deck .stage {
+    padding-top: 12px;
+  }
+
+  #deck .stage .eyebrow {
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  #deck .stage h1 {
+    margin: 2px 0;
+    font-size: 21px;
+  }
+
+  #deck .stage > .muted {
+    margin: 4px 0;
+  }
+
+  #deck .keys {
+    gap: 10px;
+    padding: 4px;
+  }
+
+  #deck .key {
+    padding: 19px 2px 4px;
+  }
+
+  #deck .key .num {
+    top: 4px;
+    left: 5px;
+    min-width: 24px;
+    padding: 2px 4px;
+    font-size: 9px;
+  }
+
+  #deck .key b {
+    /* Keeps the longest shipped title, “Unassigned”, whole at 1280×577. */
+    font-size: 10px;
+  }
+
+  #deck .key small {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+}
+#deck .deck-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 22px;
+}
+#deck .deck-inspector > * { flex-shrink: 0; }
+#deck .deck-inspector h2 {
+  margin: 0;
+  color: #302820;
+  font-size: 18px;
+}
+@media (max-width: 620px) {
+  .slot { min-height: 0; }
+}
+
+/* The deck column's short-window steps, and its narrow fold.  They were in keypanel.css
+   and flow.css, where they beat the base rule above; this file loads last, so they come
+   after it here and go on winning, in the order they won in. */
+@media (max-height: 700px) {
+  #deck .deck-inspector { gap: 12px; padding-top: 18px; padding-bottom: 18px; }
+}
+
+@media (max-height: 620px) {
+  #deck .deck-inspector { padding: 13px 16px; }
+  #deck .deck-inspector h2 { font-size: 16px; }
+  #deck .inspector-intro { font-size: 12px; }
+}
+
+@media (max-width: 1170px) {
+  /* The deck's two panes stack: the drawing's middle pane now gives the panel the
+     whole width, so the grid becomes one column and each pane scrolls on its own. */
+  #deck.active { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; overflow-y: auto; }
+  #deck .stage { overflow-y: visible; }
+  #deck .deck-inspector { border-left: 0; border-top: 1px solid var(--line); overflow-y: visible; }
+}
+
+/* ── Rehoused from overrides.css ─────────────────────────────────────────────
+   The drawing's styles used to live in overrides.css, which loads third of eight
+   stylesheets; this file loads last, so a rule here beats the sheets in between.
+   Each of these rules sits above this file's own rules, which is where it was in
+   effect before: the file's own still decide what they always decided.  The two
+   `.key .key-art` rules show why that matters - they set different properties, so
+   neither replaces the other, and their order is the only thing saying which wins
+   a shared one.
+
+   Nothing else in the app styles the dial cue, the dial marker or a key's
+   artwork, so these rules had nothing to compete with along the way. */
+
+#deckKeys .key-art,
+.key .key-art {
+  border-radius: 5px;
+  background: #0a141c;
+  image-rendering: auto;
+}
+
+#deck .dial-marker {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  width: 4%;
+  height: 24%;
+  margin-left: -2%;
+  border-radius: 2px;
+  background: #e2b487;
+  transform-origin: 50% 150%;
+}
+#deck .dial-cue {
+  --dial-cue: #2f9e68;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 90ms linear;
+}
+
+#deck .dial.pressed .dial-cue { opacity: 1; }
+#deck .dial[data-turn="ccw"] .dial-cue { --dial-cue: var(--orange); }
+
+#deck .dial-cue::before {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  border-top-color: var(--dial-cue);
+  border-right-color: var(--dial-cue);
+}
+
+#deck .dial[data-turn="ccw"] .dial-cue::before {
+  border-right-color: transparent;
+  border-left-color: var(--dial-cue);
+}
+
+#deck .dial-cue::after {
+  content: "";
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 8px solid var(--dial-cue);
+  transform: translate(-50%, -50%);
+}
+
+#deck .dial[data-turn="ccw"] .dial-cue::after {
+  border-left: 0;
+  border-right: 8px solid var(--dial-cue);
+}
+
+/* The deck, drawn once, for every page that shows it.
+ *
+ * Drawn from the object itself: a flat matte black body, six LCD keys in two rows of
+ * three with the lit face recessed in a black frame, the three round buttons beneath
+ * them sitting each in its own well, the large knurled dial at the right with two
+ * smaller ones below it. Loaded last, so it owns these
+ * controls wherever they appear.
+ *
+ * Three marks, three meanings, the same as everywhere in this app: the ring is the
+ * control being worked on, the corner dot is a claim this menu has taken, and the amber
+ * focus ring is the keyboard's.
+ */
+
+.deck-body {
+  display: flex;
+  align-items: stretch;
+  gap: 52px;
+  width: fit-content;
+  padding: 17px 30px;
+  border-radius: 17px;
+  /* Lighter than the object itself, on purpose: matte black on matte black hides the
+     buttons, and a drawing nobody can read is not a drawing of the thing in your hand.
+     Still matte - one soft sheen along the top edge, nothing glossy. */
+  background: #383640;
+  box-shadow: inset 0 1px 0 #ffffff12, inset 0 -1px 0 #000000a0, 0 10px 24px #2a1f1420;
+}
+
+/* The drawing is placed by whatever mounts it: centred, with the same air above and
+   below that the old drawing had.  Dropping this is what left it against the left edge
+   on the Deck page the first time the page mounted it. */
+/* A mount centres the drawing it holds, and gives it the full width of its pane: the Menus
+   pane's own side padding would otherwise squeeze the drawing a size smaller than the Deck
+   page's, and the two are meant to be the same deck at the same size.  The pull is the
+   canvas's own padding, `22px`. */
+.deck-mount { display: grid; justify-items: center; margin: 18px 0 10px; }
+.fx-deckmount { display: grid; justify-items: center; margin: 18px -22px 10px; }
+
+.deck-left { display: grid; align-content: space-between; gap: 13px; }
+
+.deck-keyfield { display: grid; grid-template-columns: repeat(3, 72px); gap: 9px; }
+
+/* ── The LCD keys ─────────────────────────────────────────────────────────────── */
+
+.deck-well {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  padding: 5px;
+  border-radius: 10px;
+  background: #0e0d11;
+  box-shadow: inset 0 2px 3px #000000a0, inset 0 -1px 0 #ffffff12;
+}
+
+.key {
+  display: grid;
+  /* One full-width column, so the name ellipsises across the face instead of being
+     clamped to the width of the picture beside it. */
+  grid-template-columns: 100%;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  width: 62px;
+  height: 62px;
+  padding: 5px 2px 4px;
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  cursor: pointer;
+  /* The lit face, and the glow it throws into its own frame. */
+  background: var(--face, #1d1c22);
+  color: #f4f1ec;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px #ffffff14, inset 0 6px 10px #ffffff0a;
+}
+
+/* The face is a column of its own, so every key's picture sits in the middle of its key and
+   every name gets the whole face to sit in - six keys, one layout, whatever they contain. */
+.deck-face { display: grid; grid-template-columns: 100%; justify-items: center; gap: 2px; }
+
+.key.empty { color: #8d8880; }
+.key .deck-top { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.deck-num { color: #ffffff70; font-size: 8px; font-weight: 800; letter-spacing: .04em; }
+.deck-badge { color: #ffffffcc; font-size: 7px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+.key .key-art { width: 26px; height: 26px; object-fit: contain; }
+/* Whole names, not clipped ones: at this size the longest of the deck's own labels fits
+   inside a key, and a name that is complete is worth a point of type. */
+.deck-name { display: block; width: 100%; min-width: 0; max-width: 100%; font-size: 7.5px; font-weight: 600;
+  line-height: 1.1; text-align: center;
+  /* One line, never wrapped: a key's face is a fixed size, and a name that moves the tile's
+     contents about is a face that does not match its neighbours. */
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.key.selected { outline: 2px solid #ffb020; outline-offset: 3px; }
+.key:focus-visible { outline: 2px solid #ffd166; outline-offset: 3px; }
+
+/* ── The three buttons under the keys ─────────────────────────────────────────── */
+
+.deck-caps { display: grid; grid-template-columns: repeat(3, 72px); justify-items: center; }
+
+.deck-well-cap { width: 32px; height: 32px; padding: 0; }
+
+.button-cap {
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  /* Matte black, domed, catching light at the top left only. */
+  background: radial-gradient(circle at 36% 30%, #746c5f, #2f2b26 74%);
+  box-shadow: 0 1px 2px #00000090, inset 0 1px 0 #ffffff38;
+}
+
+.button-cap.selected { outline: 2px solid #ffb020; outline-offset: 4px; }
+.button-cap:focus-visible { outline: 2px solid #ffd166; outline-offset: 4px; }
+.button-cap.claimed::after { content: ''; position: absolute; top: -1px; right: -1px;
+  width: 7px; height: 7px; border-radius: 50%; background: #ffb020; }
+.deck-well-cap { position: relative; }
+
+/* ── The dials ────────────────────────────────────────────────────────────────── */
+
+.deck-right { display: grid; align-content: space-between; justify-items: center; gap: 10px; }
+
+.deck-dials { display: grid; justify-items: center; gap: 11px; }
+.deck-dial-pair { display: flex; align-items: flex-start; gap: 15px; }
+.deck-dial-holder { position: relative; display: grid; justify-items: center; gap: 5px; }
+
+.deck-dial-name { color: #b9b2a6; font-size: 9px; font-weight: 700; letter-spacing: .05em; }
+
+/* A knob, not a disc: a knurled rim machined round the edge, a turned face, and the
+   pointer the deck itself wears. */
+.dial {
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: radial-gradient(circle at 34% 28%, #5b554d, #2a2724 74%);
+  box-shadow: 0 2px 4px #00000070, inset 0 1px 0 #ffffff20;
+}
+.dial::before { content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-conic-gradient(#4c4844 0 2.4deg, #262421 2.4deg 4.8deg);
+  -webkit-mask: radial-gradient(circle, #0000 63%, #000 64%);
+  mask: radial-gradient(circle, #0000 63%, #000 64%); }
+.dial::after { content: ''; position: absolute; inset: 20%; border-radius: 50%;
+  background: repeating-radial-gradient(circle at 50% 50%, #5a534b 0 1.2px, #37322d 1.2px 2.4px); }
+.dial-large { width: 76px; height: 76px; }
+.dial-large::after { inset: 22%; }
+
+.dial-marker { position: absolute; left: 50%; top: 5px; z-index: 2; width: 2px; height: 11px;
+  margin-left: -1px; border-radius: 1px; background: #efece7cc; }
+.dial-large .dial-marker { top: 8px; height: 14px; }
+.dial-cue { position: absolute; inset: 0; border-radius: 50%; }
+
+.dial.selected { outline: 2px solid #ffb020; outline-offset: 4px; }
+.dial:focus-visible { outline: 2px solid #ffd166; outline-offset: 4px; }
+.deck-dial-holder.claimed::after { content: ''; position: absolute; top: -2px; right: -1px;
+  width: 8px; height: 8px; border-radius: 50%; background: #ffb020; }
+
+/* A drawing of a fixed-size object is scaled, not reflowed. */
+@media (max-width: 1180px) { .deck-body { zoom: .86; } }
+@media (max-width: 1060px) { .deck-body { zoom: .76; } }
+@media (max-width: 980px) { .deck-body { zoom: .68; } }

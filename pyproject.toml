@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "akp03"
+version = "0.7.0"
+description = "AJAZZ AKP03 vendor HID driver"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=10", "tomli-w>=1.0"]
+
+[project.optional-dependencies]
+macos-hid = ["hidapi>=0.14"]
+
+[project.scripts]
+akp03 = "akp03.__main__:main"
+akp03d = "akp03.daemon:main"
+akp03-webui = "akp03.webui:main"
+akp03-migrate-images = "akp03.images:main"
+akp03-preflight = "akp03.preflight:main"
+akp03-macos-probe = "akp03.macos_probe:main"
+
+[tool.setuptools]
+packages = ["akp03"]
+
+[tool.setuptools.package-data]
+akp03 = ["assets/starter-artwork/*.png", "webui_assets/*.html", "webui_assets/*.css", "webui_assets/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

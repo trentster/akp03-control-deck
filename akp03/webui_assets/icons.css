@@ -1,0 +1,177 @@
+/* The Icons page.
+ *
+ * The page is light and warm like the rest of the workspace.  The one deliberately
+ * dark thing is a tile's face: that is the colour the deck actually paints, so what
+ * you see here is what the glass will show.
+ */
+
+#icons { display: block; }
+
+/* The header spans the full width above both columns.  As a flex row followed by the
+   split, the description ran to 62ch and ended up under the sets column, so the two
+   were drawn over each other. */
+/* The shared page-header rule insets its text by 30px, so the columns below use the
+   same gutter: without it the sets list sat flush against the view's edge while the
+   heading above it was inset, and the two edges did not line up. */
+.ic-shell { display: grid; grid-template-columns: 190px minmax(0, 1fr); column-gap: 18px;
+  row-gap: 0; align-items: start; padding: 0 30px; }
+/* The two ways a set arrives, in their own row at the top right of the page, and the form the
+   first of them opens directly underneath - where the person who pressed it is looking.  With
+   the buttons out of the sidebar, that column is only ever sets, and they are the first thing
+   on the page whatever the two lists grow to.
+   The pair's right edge lines up with the card's own button row (Rename set, Export, Delete
+   set), which is why the inset is 27px: the card's 18px padding, its 1px border, and the 8px
+   the card's own quiet buttons carry as a margin.
+   The row carries the space on both sides itself - 12px above, 12px below - so the buttons
+   sit centred in the band between the page bar and the card.  The shell's row gap is nothing
+   for that reason: left at 18px it would add to the padding below and the pair would sit
+   against the bar with all the air underneath. */
+.ic-top { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-end;
+  gap: 8px; padding: 12px 27px 12px 0; }
+.ic-top-actions { display: flex; align-items: center; gap: 8px; }
+/* Smaller and quieter than a form control: two ways in, not a call to action.  The dashed
+   outline the quiet buttons carry elsewhere is solid here, so they read as one pair of small
+   buttons rather than as empty slots waiting to be filled. */
+.ic-top .ic-addset { margin: 0; padding: 6px 11px; font-size: 12px; border-radius: 9px;
+  border-style: solid; border-color: var(--line); }
+.ic-top .ic-newset { width: 240px; }
+
+/* Both columns are named explicitly, so neither can drift into the other's space. */
+.ic-side { grid-column: 1; }
+.ic-work { grid-column: 2; }
+.ic-split { display: contents; }
+
+/* ── sets ─────────────────────────────────────────────────────────────────── */
+/* The column runs the height of the work card beside it, so the pair of actions that start
+   something new can hang at its foot, level with the card's bottom edge. */
+.ic-side { display: flex; flex-direction: column; gap: 14px; align-self: stretch; }
+.ic-group { display: flex; flex-direction: column; gap: 5px; }
+/* The two kinds of set are different things - one is read-only and the other is where the
+   work happens - so a rule between them stops the list reading as one column of tiles. */
+.ic-group + .ic-group { margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--line-strong); }
+.ic-group-label { margin: 0 0 2px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #9a6b4c; }
+.ic-note { margin: 0 0 4px; font-size: 11px; line-height: 1.5; color: var(--muted-soft); }
+
+.ic-set { display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  border: 1px solid var(--line-strong); background: var(--surface-raised); border-radius: 9px; padding: 7px 10px;
+  cursor: pointer; text-align: left; font: inherit; color: var(--body); }
+.ic-set:hover { background: var(--surface); }
+.ic-set b { font-size: 12.5px; font-weight: 700; }
+.ic-set small { font-size: 10.5px; color: #9a9186; }
+.ic-set.on { border-color: var(--orange, var(--orange)); background: var(--tint-warm); }
+.ic-set.on b { color: #b8461c; }
+
+/* ── the work area ────────────────────────────────────────────────────────── */
+.ic-work { border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 16px 18px 18px; }
+.ic-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ic-head h2 { margin: 0 0 3px; font-size: 15px; color: #33291f; }
+.ic-head p { margin: 0; font-size: 11.5px; }
+
+.ic-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 14px 0 0; padding-top: 13px; border-top: 1px solid var(--soft); }
+
+/* The one thing to press on this page, so it looks like something to press: filled,
+   rounded, with room around the words. */
+.ic-add { display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  background: var(--teal, var(--teal)); color: var(--surface); border: 1px solid #2a726c;
+  border-radius: 10px; padding: 9px 15px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 0.01em; box-shadow: 0 1px 0 #ffffff40 inset, 0 1px 2px #2f7f7822; }
+.ic-add:hover { background: #2a726c; }
+.ic-add:active { transform: translateY(1px); }
+.ic-add:focus-visible { outline: 2px solid #b8461c; outline-offset: 2px; }
+.ic-hint-inline { font-size: 11.5px; color: var(--faint); }
+.ic-hint { margin: 10px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--muted-soft); }
+
+/* What you can do, in one place: to the picture you have picked, and to the set itself.
+   The set's actions used to be five-part links beside the title, one word wide. */
+.ic-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--soft); }
+.ic-bar-picked { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.ic-picked-label { font-size: 12px; color: var(--muted-soft); }
+.ic-picked-label b { color: #3b362f; font-weight: 600; }
+.ic-bar-set { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+/* The app's quiet button is built for a form; in this bar it is a utility, so it keeps the
+   shape and loses the bulk - the mockup Mark approved had them at this size. */
+.ic-bar .quiet { padding: 6px 11px; font-size: 12px; border-radius: 9px; }
+
+/* Deleting stops looking like renaming, in both places. */
+.ic-bar .quiet.is-danger { color: #b4462a; border-color: #efd3cd; }
+.ic-bar .quiet.is-danger:hover { background: #fdf3f0; }
+
+/* A tile is the picture on the deck's own black, so a light glyph is judged here
+   exactly as it will look on the glass. */
+/* The copy question.  It sits above the tiles rather than in place of one, so you can
+   still see the set you are copying from while you answer. */
+.ic-chooser { margin: 14px 0 0; padding: 14px 15px; border: 1px solid #cfe3df; border-radius: 12px;
+  background: var(--surface); display: flex; flex-direction: column; gap: 11px; }
+.ic-chooser-q { margin: 0; font-size: 12.5px; color: var(--body); }
+.ic-chooser-rows { display: flex; flex-wrap: wrap; gap: 8px; }
+.ic-chooser-row { display: flex; flex-direction: column; gap: 1px; align-items: flex-start; text-align: left;
+  cursor: pointer; border: 1px solid #d8e8e4; border-radius: 10px; background: var(--surface);
+  padding: 8px 13px; font: inherit; font-size: 12px; font-weight: 700; color: #2f6f69; }
+.ic-chooser-row small { font-weight: 500; font-size: 10.5px; color: var(--muted-soft); }
+.ic-chooser-row:hover { border-color: var(--teal); background: #f2faf8; }
+.ic-chooser-new { display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  padding-top: 11px; border-top: 1px solid #e3eeeb; }
+.ic-chooser-new input { font: inherit; font-size: 12px; padding: 7px 10px; border-radius: 9px;
+  border: 1px solid #ded4c8; background: var(--surface); min-width: 170px; }
+/* Losing a whole set is asked for plainly, in the same panel shape as the copy question. */
+.ic-confirm { margin: 14px 0 0; padding: 14px 15px; border: 1px solid #eccdc2; border-radius: 12px;
+  background: #fdf6f3; display: flex; flex-direction: column; gap: 11px; }
+.ic-confirm p { margin: 0; font-size: 12.5px; color: var(--body); }
+.ic-confirm-buttons { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ic-danger { cursor: pointer; border: 1px solid #a8412a; border-radius: 10px; background: #b4462a;
+  color: var(--surface); font: inherit; font-size: 12.5px; font-weight: 700; padding: 8px 14px; }
+.ic-danger:hover { background: #a8412a; }
+.ic-empty-set { margin: 16px 0 0; padding: 20px 18px; border: 1px dashed #e0d5c8; border-radius: 12px;
+  background: var(--surface); font-size: 12.5px; line-height: 1.6; color: var(--muted-soft); max-width: 62ch; }
+
+.ic-setname { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin: 0 0 2px; }
+.ic-setname label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--faint); }
+.ic-setname input { font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 9px;
+  border: 1px solid #ded4c8; background: var(--surface); min-width: 200px; }
+
+.ic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px; margin-top: 12px; }
+.ic-tile { margin: 0; border: 1px solid var(--line); border-radius: 13px; background: var(--surface);
+  padding: 11px 10px 10px; display: flex; flex-direction: column; gap: 9px; align-items: center;
+  cursor: pointer;
+  transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease; }
+.ic-tile:hover { border-color: #e0d5c8; box-shadow: 0 2px 10px #6b5a4012; transform: translateY(-1px); }
+/* The picked tile is the one the bar is talking about, so it has to be unmistakable. */
+.ic-tile.is-picked { border-color: var(--teal, #17786f); outline: 2px solid var(--teal, #17786f);
+  outline-offset: 1px; }
+.ic-tile:focus-visible { outline: 2px solid var(--orange, #b8461c); outline-offset: 2px; }
+.ic-face { display: flex; align-items: center; justify-content: center; width: min(100%, 104px);
+  aspect-ratio: 1; border-radius: 12px; background: #171412;
+  box-shadow: inset 0 0 0 1px #00000033, 0 1px 3px #17141226; }
+.ic-face img { display: block; width: 82%; height: 82%; object-fit: contain; }
+.ic-tile figcaption { display: flex; flex-direction: column; gap: 3px; align-items: center;
+  text-align: center; min-width: 0; max-width: 100%; }
+.ic-label { font-size: 12.5px; font-weight: 700; color: var(--body); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.ic-tiny { border: none; background: none; padding: 0; cursor: pointer; font: inherit;
+  font-size: 10.5px; font-weight: 600; color: #b0a79b; white-space: nowrap;
+  text-decoration: underline dotted #d6cec4; text-underline-offset: 2px; }
+.ic-tiny:hover { color: var(--body); text-decoration-color: currentColor; }
+
+.ic-rename { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.ic-rename input { width: 8.5em; padding: 4px 7px; border: 1px solid var(--line-strong); border-radius: 8px;
+  font: inherit; font-size: 11.5px; }
+
+.ic-newset { display: flex; flex-direction: column; gap: 6px; border: 1px solid #edc3a6;
+  background: var(--surface-raised); border-radius: 10px; padding: 10px 11px; }
+.ic-newset label { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #9a6b4c; }
+.ic-newset input[type="text"] { padding: 5px 8px; border: 1px solid var(--line-strong); border-radius: 8px; font: inherit; font-size: 12px; }
+
+.ic-empty { margin: 0; padding: 22px 4px; font-size: 12.5px; color: var(--muted-soft); }
+
+/* Dropping pictures anywhere on the page is the same as choosing them. */
+#iconsRoot.ic-dragging .ic-work { border-color: var(--teal, var(--teal)); background: #f2f8f7; }
+
+@media (max-width: 1000px) {
+  .ic-split { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,0 +1,17 @@
+[Unit]
+Description=AJAZZ AKP03 safe automation daemon
+After=default.target
+
+[Service]
+Type=simple
+# Installed by: %h/akp03/.venv/bin/pip install --no-deps --editable %h/akp03/driver
+ExecStart=%h/akp03/.venv/bin/akp03d --config %h/.config/akp03/config.toml --socket %t/akp03.sock
+EnvironmentFile=-%h/.config/akp03/env
+Restart=always
+RestartSec=1
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=default.target

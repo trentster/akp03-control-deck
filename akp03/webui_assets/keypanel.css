@@ -1,0 +1,652 @@
+/* ── Rehoused from overrides.css ────────────────────────────────────────────
+   These rules sit above this file's own rules, which is where they were in effect
+   before: this file loads after overrides.css, so its own rules still win what they
+   won.  They do now beat every sheet that loads between the two - check what they
+   compete with before reordering this block, because no test will stop you. */
+
+.new-action-actions .primary { border: 1px solid #256774; background: #2c7886; color: var(--surface); }
+.new-action-actions .quiet { border: 1px solid var(--line-deep); background: var(--soft); color: var(--brown); }
+.action-inline-actions { display: flex; gap: 8px; }
+.action-inline-actions button { padding: 7px 12px; border-radius: 9px; font: inherit; font-weight: 700; cursor: pointer; }
+.action-inline-actions .primary { border: 1px solid #256774; background: #2c7886; color: var(--surface); }
+.action-inline-actions .quiet { border: 1px solid var(--line-deep); background: var(--soft); color: var(--brown); }
+
+/* The card's arrival: a small lift, so a control reports itself when it is chosen
+   without a banner.  It came out of overrides.css with the rules above, and this is
+   the only sheet that uses it. */
+@keyframes selected-control-arrival {
+  from { transform: translateY(3px); }
+  to { transform: translateY(0); }
+}
+
+/* ── This file has two parts, in this order ─────────────────────────────────
+   First, the panel's face: the readout of the selected control, the assignment
+   card, the picker and the action tools, in the order they run down the panel.
+   Then, below, the panel itself - its cards, rows and fields.
+
+   The order is not decoration.  The rules in the first part came from
+   overrides.css, which loads third of eight, so each of them loses an
+   equal-specificity argument to a later sheet - and still does, because this
+   file loads fourth.  Before moving a rule across the line, or reordering
+   either part, check what it competes with. */
+
+
+.selected-control {
+  --control-start: #214850;
+  --control-end: #172b31;
+  position: relative;
+  overflow: hidden;
+  /* Never squashed by a flex parent: the card clips to its own rounded shape, so a
+     parent that shrinks it would eat the name and the shortcut instead of wrapping. */
+  flex: 0 0 auto;
+  padding: 16px;
+  border: 1px solid #173d43;
+  border-radius: 16px;
+  background: linear-gradient(140deg, var(--control-start), var(--control-end));
+  color: var(--surface);
+  box-shadow: 0 10px 24px #15333a2b;
+  transition: background .14s ease-out, border-color .14s ease-out, box-shadow .14s ease-out;
+}
+.selected-control::after {
+  position: absolute;
+  right: -22px;
+  bottom: -34px;
+  width: 98px;
+  height: 98px;
+  border: 1px solid #ffffff42;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #ffffff10, transparent);
+  box-shadow: inset 0 0 0 10px #ffffff08;
+  content: "";
+  transform: rotate(10deg);
+}
+
+.selected-control[data-control-shape="knob"]::after {
+  right: -18px;
+  bottom: -29px;
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 10px #ffffff08;
+  transform: none;
+}
+
+.selected-control[data-control-shape="button"]::after {
+  border-radius: 12px;
+}
+
+.selected-control.tone-gold { --control-start: #63502c; --control-end: #32291b; border-color: #4c3819; box-shadow: 0 10px 24px #3e2d131f; }
+.selected-control.tone-red { --control-start: #643b38; --control-end: #302122; border-color: #482927; box-shadow: 0 10px 24px #42222024; }
+
+.control-identity {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-number {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  place-items: center;
+  border: 1px solid #ffffff7a;
+  border-radius: 14px;
+  background: #0b1519a6;
+  color: var(--surface);
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+.control-type,
+.control-identity b {
+  display: block;
+}
+
+.control-type {
+  color: #ffffffb8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1.2;
+}
+
+.control-identity b {
+  margin-top: 4px;
+  color: var(--surface);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.action-description {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+  margin: 13px 0 0;
+  padding: 5px 8px;
+  border: 1px solid #ffffff36;
+  border-radius: 8px;
+  background: #00000014;
+  color: #ffffffb8;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.action-description kbd {
+  padding: 1px 4px;
+  border: 1px solid #ffffff57;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: #ffffff13;
+  color: var(--surface);
+  font: 700 10px/1.25 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+#deck .assignment-card.tone-gold .current-assignment b { color: #8b5f10; }
+#deck .assignment-card.tone-red .current-assignment b { color: #ad3d35; }
+
+#deck .action-meta {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  border: 1px solid #ded5ca;
+  border-radius: 7px;
+  background: var(--soft);
+  color: #806f5f;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+#deck .action-meta kbd {
+  padding: 1px 4px;
+  border: 1px solid #cfc4b7;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--brown);
+  font: 700 10px/1.25 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.picker-option.active {
+  border-color: #2c7886;
+  background: #e8f3f5;
+  outline: 2px solid #9bd7e2;
+  outline-offset: 1px;
+}
+.picker-option.selected { border-color: #cbb7a1; background: #f6efe3; }
+
+.key-mods {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+}
+.key-mods legend { padding: 0 4px; color: #806f5f; font-size: 11px; font-weight: 800; }
+.key-mods label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.action-tools button {
+  padding: 6px 10px;
+  border: 1px solid var(--line-deep);
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--brown);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.action-tools button:hover { background: #e9e0d4; }
+.action-tools button:focus-visible { outline: 2px solid #9bd7e2; outline-offset: 2px; }
+
+.action-inline {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+.action-inline label { color: var(--warm-grey-deep); font-size: 12px; font-weight: 700; }
+.action-inline input[type="text"], .action-inline input[type="number"] { padding: 7px 9px; border: 1px solid var(--line-deep); border-radius: 8px; font: inherit; }
+.action-inline .helper[hidden] { display: none; }
+
+#deck .assignment-card .helper {
+  margin: 9px 0 0;
+  color: #66584c;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@media (max-height: 700px) {
+  .selected-control { padding: 13px; }
+  .control-number { width: 50px; height: 50px; flex-basis: 50px; font-size: 24px; }
+  .control-identity b { font-size: 17px; }
+  .action-description { margin-top: 9px; font-size: 13px; }
+}
+
+@media (max-height: 620px) {
+  .selected-control { padding: 11px; border-radius: 13px; }
+  .control-number { width: 44px; height: 44px; flex-basis: 44px; border-radius: 11px; font-size: 21px; }
+  .control-type { font-size: 13px; }
+  .control-identity b { font-size: 16px; }
+  .action-description { margin-top: 7px; font-size: 12px; }
+  #deck .assignment-card { padding: 12px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .selected-control { animation: selected-control-arrival .18s ease-out; }
+}
+
+/* ── The button panel ───────────────────────────────────────────────────────
+   One panel in two states, mounted wherever a button is edited: a deck key, a menu
+   key, and a menu button on the Menus page or under the chain.  At rest it reports
+   what the button has - the kind of thing assigned, then its label, its shortcut
+   and its picture - and Edit swaps that for the editors that change them.  Nothing
+   here navigates away, so a button is one place you look rather than a journey
+   through pages.  Every rule is scoped to the panel, so one mount cannot be styled
+   differently from another. */
+
+/* The panel is a column of cards, spaced like the Menus button panel.  It used to
+   sit under its own rule with a 16px lead-in on top of the column's gap, which
+   nobody else did, and its rows carried no card at all. */
+.key-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.key-panel .panel-row {
+  display: grid;
+  gap: 10px;
+}
+
+/* `display: grid`/`inline-flex` above beat the UA's `[hidden] { display: none }`,
+   so every toggled part of the panel needs its own rule: without these the
+   Shortcut row kept showing a stale keystroke for a key with no action at all. */
+.key-panel .panel-row[hidden],
+.key-panel .panel-context[hidden],
+.key-panel .row-thumb[hidden],
+.key-panel .row-choices[hidden],
+.key-panel .row-new-form[hidden] {
+  display: none;
+}
+
+/* The same trap one level up, and it cost more than a stale row: `.key-panel` sets
+   `display: grid`, so a panel ignored the `hidden` the chain sets when another mount
+   takes over the column - the deck key's own summary stayed on screen above the
+   button's panel, with the key's picture, for every button you clicked in the menu.
+   Every mount is a `.key-panel`, so one rule covers all of them. */
+.key-panel[hidden] {
+  display: none;
+}
+
+/* Typography comes from the shared section-label rule in flow.css; only the
+   spacing belongs here. */
+.key-panel .row-label { margin: 0; }
+
+/* The at-rest summary and the heading row are shared with the Menus panel: the
+   summary is `.summary-list`, in flow.css, and the heading row is `.row-head` below.
+   The Menus panel used to carry its own `.fx-cardhead` and `.fx-sec`; both went with
+   the markup when that panel became this component, so nothing here is a second
+   definition of anything. */
+
+/* ── changing it ──────────────────────────────────────────────────────────────
+   The editors, revealed by Edit and closed by Edit again.  The wrapper is a plain
+   div, so it needs a gap of its own and its own `[hidden]` rule: without them the
+   cards sit flush, and a `display: grid` beats the browser's `[hidden]`. */
+.key-panel [data-panel="editors"] { display: grid; gap: 12px; }
+.key-panel [data-panel="editors"][hidden] { display: none; }
+
+/* A dial is three slots, and its rows live inside one panel row: tighter than the
+   panel's own spacing, because they are parts of one control rather than three. */
+.key-panel .dial-slots { display: grid; gap: 14px; }
+.key-panel .dial-slots .panel-row { gap: 4px; }
+
+/* A slot nobody can set is stated in the same shape as the ones they can, so the dial
+   reads as one list: the value is text, not a control, and it says what it is. */
+.key-panel .row-fixed { display: grid; gap: 2px; margin: 0; }
+.key-panel .row-fixed b { font-weight: 600; }
+.key-panel .row-fixed small { color: var(--muted, #b9ae9f); }
+
+/* The chosen value is a row *inside* its card, so it carries the card's tint rather
+   than a second surface of its own. */
+.key-panel .row-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #eae1d6;
+  border-radius: 12px;
+  background: var(--soft, var(--soft));
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.key-panel .row-value:hover,
+.key-panel .row-value[aria-expanded="true"] {
+  border-color: #bdb2a2;
+  background: var(--surface);
+}
+
+.key-panel .row-value b { font-size: 13px; flex: none; white-space: nowrap; }
+/* The value and the hint beside it each take one line, always.  A squeezed row broke
+   "＋ Assign…" over two lines and wrapped the hint underneath it, so a row you press read
+   as a stack of loose words.  The value keeps its whole width; the hint gives way first,
+   because half a hint still reads and half a verb does not. */
+.key-panel .row-value .row-meta {
+  color: var(--muted-soft);
+  font-size: 11px;
+  margin-left: auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A row you can pick from has to look different from a row that just reports a
+   value.  Until now the value looked like a label, so the shortcuts the app already
+   has — Copy, Paste, Spotlight and the rest — were reachable but invisible: nobody
+   could tell the row was a control.  Empty and filled states now share one cue. */
+.key-panel .row-value::after {
+  /* A chevron is the wrong cue here.  Every other control in this panel is a
+     word - "Edit...", "Test it now", "Rename...", "Delete this action" - and an
+     empty row already says "+ Assign...".  A lone glyph in a panel that speaks
+     in words asked the person to guess, which is exactly the report: "who's
+     gonna even guess that".  So the filled row now says what the empty row says,
+     in the same shape: a verb with an ellipsis, because it opens something. */
+  content: "Change\2026";
+  margin-left: auto;
+  padding-left: 12px;
+  color: #0d7d7a;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex: none;
+  transition: color 120ms ease;
+}
+.key-panel .row-value:hover::after,
+.key-panel .row-value:focus-visible::after { text-decoration: underline; }
+.key-panel .row-value[aria-expanded="true"]::after { content: "Close\2026"; }
+.key-panel .row-thumb { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; }
+.key-panel .row-thumb img { image-rendering: auto; }
+.key-panel .panel-context { margin: 0; font-size: 11.5px; color: var(--warm-grey); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.key-panel .row-new { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 6px; }
+.key-panel .row-new-form { display: grid; gap: 6px; padding: 8px 4px 4px; }
+.key-panel .row-new-form input { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: 12px; }
+/* Looking after the action a key has: run it, rename it, delete it — right under
+   the row that names it, so nobody has to hunt for a separate page. */
+/* Same zone as the Menus panel's tools: a hairline, then small quiet buttons. */
+.key-panel .action-tools { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--soft); }
+.key-panel .action-tools[hidden] { display: none; }
+.key-panel .action-tools .quiet {
+  border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--body); border-radius: 9px;
+  padding: 5px 9px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.key-panel .action-tools .quiet:hover { border-color: #b9b0a2; background: var(--surface); }
+.key-panel .action-tools .quiet-danger { color: #8c5b46; border-color: #e6d3ce; }
+.key-panel .action-tools .quiet-danger:hover { border-color: #c99; background: #fdf6f4; }
+
+/* Response is a behaviour flag, not a fourth choice beside the three cards.  As a card it
+   carried a heading band, an outlined bubble and a hint line - three bands' worth of chrome
+   for one checkbox - so it is a plain line on the panel's own paper, and the explainer has
+   moved onto the label as a tooltip. */
+.key-panel .panel-row[data-panel-row="mode"] {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  /* The panel's own card inset, not less: this line still stands inside a card, and the
+     2px sides and 0 bottom it was given had the checkbox against the card's left edge and
+     the words against its floor - which is what a person sees first. */
+  padding: 13px 14px;
+}
+
+/* The `display: flex` above beats the browser's [hidden], which the mode row needs: it is
+   only offered where holding means something. */
+.key-panel .panel-row[data-panel-row="mode"][hidden] { display: none; }
+
+.key-panel .panel-row[data-panel-row="mode"] .row-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted-soft);
+}
+
+.key-panel .row-modifiers { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+/* The key half of a shortcut: tiles that light up on click, so a bound key is
+   visible at a glance instead of being words in a box with a text cursor. */
+.key-panel .key-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.key-panel .key-chip {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--warm-grey);
+  cursor: pointer;
+}
+.key-panel .key-chip:hover { border-color: #b9b0a2; }
+.key-panel .key-more { margin-top: 6px; }
+.key-panel .key-more summary { cursor: pointer; font-size: 11.5px; color: var(--warm-grey); }
+.key-panel .key-letter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  color: var(--warm-grey);
+}
+.key-panel .key-letter.on { color: var(--key-blue); font-weight: 600; }
+.key-panel .key-letter .shortcut-key { width: 46px; text-align: center; text-transform: uppercase; }
+/* A shortcut that is one bare letter: allowed, and said plainly.  It is not an error -
+   the person chose it - so it reads as a caution, not a refusal. */
+.key-panel .key-warning {
+  margin: 8px 0 0;
+  padding: 6px 9px;
+  border-left: 3px solid #c9902f;
+  border-radius: 0 6px 6px 0;
+  background: #fdf7e8;
+  color: #6b4d12;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+/* A key that cannot be pressed into the field is shown as refused, not saved as
+   something else: the field holds a key *name* ("↑ up"), not a character. */
+.key-panel .shortcut-key, .key-panel .row-modifiers input[type="text"] { min-width: 96px; }
+.key-panel .shortcut-key.is-set, .key-panel .row-modifiers input.is-set {
+  border-color: #2f9e68; background: var(--surface-raised);
+}
+.key-panel .shortcut-key.is-unknown, .key-panel .row-modifiers input.is-unknown {
+  border-color: #c8483c; background: #fdf1ef;
+}
+
+/* A list, not a cramped grid: the whole set scrolls as one column of words. */
+.key-panel .row-choices {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  /* The scrollbar here is a real 10px bar drawn inside this box, so the right padding
+     has to carry the bar's width and a gap besides: without it a count or a Delete sits
+     against the bar and reads as though it had been cut off. */
+  padding: 8px 18px 8px 8px;
+  max-height: 300px;
+  overflow: auto;
+  /* macOS hides its overlay scrollbar until you scroll, so a list that is cut off looks
+     like a list that ended.  The scrollbar below is styled with the WebKit pseudo-elements
+     on purpose: styling them is what makes the browser draw a plain, always-there bar
+     instead of the overlay.  Do not set `scrollbar-width` here as well - in Blink that
+     property wins and the pseudo-elements are ignored, which puts the hiding back. */
+  }
+.key-panel .row-choices::-webkit-scrollbar { width: 10px; }
+.key-panel .row-choices::-webkit-scrollbar-track { background: transparent; }
+.key-panel .row-choices::-webkit-scrollbar-thumb {
+  background: var(--line-strong); border-radius: 6px;
+  border: 2px solid var(--surface);
+}
+/* Every section after the first starts under a rule, so the list reads as sections
+   rather than one ribbon of words. */
+.key-panel .row-choices .row-list + .row-heading {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line);
+}
+/* And the heading stays at the top of the list as its rows scroll past, so the section
+   you are looking at is always named.  The list's own padding is 8px: pulling the
+   heading up by that much puts it flush with the edge, with rows passing underneath. */
+.key-panel .row-choices .row-heading {
+  position: sticky; top: -8px; z-index: 1;
+  background: var(--surface); padding-bottom: 4px;
+}
+
+.key-panel .row-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+  color: var(--muted-soft);
+}
+
+.key-panel .row-filter input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: inherit;
+  outline: none;
+}
+
+.key-panel .row-heading {
+  margin: 8px 4px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.key-panel .row-list { display: grid; gap: 2px; }
+
+/* A row that carries its own way out: the choice keeps the width it had and the Delete
+   sits after it on the same line, so only the rows that can go are any narrower. */
+.key-panel .row-choices .row-line { display: flex; align-items: center; gap: 8px; }
+.key-panel .row-choices .row-line .choice-row { flex: 1; min-width: 0; }
+.key-panel .row-remove { flex: none; font-size: 11px; padding: 4px 9px; }
+
+.key-panel .choice-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.key-panel .choice-row:hover { background: #f4eee4; }
+.key-panel .choice-row.on { border-color: var(--teal); background: #eef6f5; }
+.key-panel .choice-row b { font-size: 12.5px; font-weight: 600; }
+.key-panel .choice-row small { color: var(--muted-soft); font-size: 11px; margin-left: auto; }
+.key-panel .choice-row em { color: var(--teal); font-size: 10px; font-style: normal; font-weight: 700; text-transform: uppercase; }
+.key-panel .choice-row img { width: 24px; height: 24px; }
+.key-panel .choice-glyph { width: 24px; text-align: center; color: #bdb2a2; }
+
+/* Shortcut: the modifiers you can see, one field for the key itself. */
+/* display: flex would beat the browser's [hidden] rule, so the collapsed editor
+   needs its own - the same trap that once left two panels stacked. */
+.key-panel .shortcut-editor[hidden] { display: none; }
+/* Same guard for the icon row's words: a display rule would beat [hidden]. */
+.key-panel .row-value b[hidden] { display: none; }
+.key-panel .shortcut-editor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.key-panel .modifier {
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--warm-grey);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Selected is unmistakable and identical for every chip in the row: the modifier
+   buttons and the key tiles light the same blue, so a bound chord reads at a
+   glance. Clicked-but-unselected now looks different from clicked-and-selected. */
+.key-panel .modifier.on,
+.key-panel .key-chip.on {
+  border-color: var(--key-blue);
+  background: var(--key-blue);
+  color: var(--surface);
+  font-weight: 700;
+  box-shadow: 0 0 0 2px #173f5f33;
+}
+
+.key-panel .shortcut-key {
+  width: 62px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ── How the assignment responds ───────────────────────────────────────────── */
+/* A checkbox is the honest control here: two states, one of them the ordinary
+   one, and nothing to open in a row that is already about a single choice. */
+.key-panel .row-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.key-panel .row-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  /* The same orange the app's other checkboxes use. */
+  accent-color: var(--orange);
+}
+
+.key-panel .row-toggle span { font-size: 13px; }

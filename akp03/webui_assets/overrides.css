@@ -1,0 +1,54 @@
+/* An empty control has exactly one thing to do, so its row is a control that says
+   so rather than describing the emptiness.  Both the deck's key panel and the
+   Menus page's button panel carry this one class, so the two cannot drift; the
+   dashed edge is the app's word for "nothing here yet", the same one an unassigned
+   key tile uses. */
+.is-assign { border: 1px dashed #7fb3ad !important; background: #f2f8f7 !important; }
+.is-assign:hover { background: #e7f2f0 !important; border-style: solid !important; }
+.is-assign b { color: var(--teal, var(--teal)); }
+
+/* A narrow window.  The app was built for a desktop window and used to defend itself with
+   a 900px floor: a phone or a split pane could only scroll sideways for ever, and the
+   breakpoints below that floor could never fire at all.  These steps fold the shell
+   instead.  Nothing is dropped - the rail keeps its three pages and the deck's own state
+   keeps its words - and the drawings, which are fixed-size pictures of a fixed-size
+   object, are scaled rather than broken. */
+@media (max-width: 900px) {
+  .app { height: auto; grid-template-columns: minmax(0, 1fr); }
+
+  /* The rail becomes a strip along the top: the mark and the three pages in a row, with
+     the deck's state as a line of its own underneath. */
+  .rail { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+    padding: 12px 14px; border-right: 0; border-bottom: 1px solid #dfd5c8; }
+  .rail .brand { padding: 0; margin-right: 4px; }
+  .rail .nav-label { display: none; }
+  .rail nav { display: flex; gap: 6px; }
+  .rail .nav { width: auto; padding: 9px 12px; }
+  .rail .sample { flex: 1 1 100%; margin: 2px 0 0; padding: 11px 13px; }
+  .rail .rail-settings { flex: 1 1 100%; margin-top: 0; }
+  /* No room above the entry in a strip, so the panel comes up from the bottom. */
+  .settings-panel { position: fixed; left: 12px; right: 12px; bottom: 12px; width: auto; }
+
+  header { height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px 12px; padding: 10px 16px; }
+  header > div { min-width: 0; }
+  /* "Save to deck" is two words and a decision: it does not break across three lines. */
+  header button { flex: 0 0 auto; white-space: nowrap; }
+  #notice { flex: 1 1 100%; }
+
+  /* One pane after another, on every page.  The pages themselves already know how to
+     stack once they are allowed to: flow.css has folded the deck and the menus since
+     they were written, and those rules simply could never fire above the floor. */
+  .view, .view.active { height: auto; }
+  .tree { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 14px 10px; }
+  .tree h2 { margin: 0 6px 6px; }
+  .canvas, .stage, .actions-view { padding: 20px 16px; }
+  .inspector, .deck-inspector { border-left: 0; border-top: 1px solid var(--line); padding: 20px 16px; }
+  .inspector h2 { margin-bottom: 14px; }
+}
+
+/* A picture of a deck does not reflow; on a narrow screen it is scaled, so the whole
+   thing stays visible and the keys stay where they are on the object.  The steps are
+   chosen so the drawing always fits the pane it is in, with nothing to scroll sideways. */
+@media (max-width: 410px) {
+  .stage, .canvas, .actions-view { padding: 16px 12px; }
+}

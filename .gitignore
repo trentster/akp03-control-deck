@@ -1,0 +1,22 @@
+# Builds and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# The build caches the relocatable Python it downloads; it belongs to the builder,
+# not to the repository.
+.cache/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Things a Mac leaves behind, and editors do
+.DS_Store
+*.log
+*.orig
+*.rej
+.vscode/
+.idea/
+
+# Agent scratch (plans written by the plan skill live here)
+.hermes/

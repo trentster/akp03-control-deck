@@ -1,0 +1,55 @@
+/* The one picture picker, used by the Deck page's key panel and the Menus page's
+   button panel. Both render these classes, so the two cannot drift apart. */
+
+/* The same small-caps style the panel's own section labels use, so a picture group
+   reads as a heading and not as another control. */
+.lib-heading { margin: 0 0 8px; font-size: 10px; font-weight: 800; letter-spacing: .09em;
+  text-transform: uppercase; color: #9a6b4c; }
+
+/* A set's heading is also its handle: pressing it opens that set, pressing it again
+   closes it.  It keeps the small-caps look of a heading but reads as something you
+   can press - full width, the caret marking the fold, the count at the far end so
+   the sets line up and can be compared at a glance. */
+.lib-toggle { display: flex; align-items: center; gap: 6px; width: 100%; padding: 2px 0;
+  border: 0; background: none; font: inherit; letter-spacing: .09em; text-transform: uppercase;
+  font-size: 10px; font-weight: 800; color: #9a6b4c; cursor: pointer; text-align: left; }
+.lib-toggle:hover { color: #7d5334; }
+.lib-toggle:focus-visible { outline: 2px solid var(--orange, var(--orange)); outline-offset: 2px; border-radius: 4px; }
+.lib-caret { font-size: 9px; line-height: 1; color: var(--warm-grey); transform: translateY(-1px); }
+.lib-set-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lib-count { flex: 0 0 auto; font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: var(--warm-grey); opacity: .75; }
+.lib-toggle[aria-expanded="true"] { margin-bottom: 8px; }
+
+/* Each group is a block: its heading and its pictures.  One hairline between one
+   block and the next - the same quiet grey the panel uses to separate unrelated
+   things - so the eye can see where a set of pictures ends.  It is drawn on the
+   following block, so it can never trail the last group. */
+.lib-block + .lib-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--soft);
+}
+
+/* The sets you added sit together behind one row.  Inside, they are indented behind a
+   quiet rule and their own separators tighten, so the nesting reads as a shelf rather
+   than as a box drawn round a box.  These rules come after the separator above on
+   purpose: the first sibling rule in this file is the one that draws the panel's own
+   hairline, and a test reads it by position. */
+.lib-nest { margin-left: 3px; padding-left: 9px; border-left: 2px solid var(--soft); }
+.lib-nest .lib-block + .lib-block { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--soft); }
+.lib-nest .lib-toggle { font-size: 9.5px; }
+
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(42px, 100%), 1fr));
+  gap: 8px; }
+/* A grid we set to display:grid would ignore the hidden attribute, so a folded set
+   would still paint every tile. Say it here, where the display is set. */
+.lib-grid[hidden] { display: none; }
+.lib-pic { aspect-ratio: 1; min-width: 0; border: 1px solid #e0d6ca; background: var(--paper); border-radius: 9px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 3px; overflow: hidden; }
+.lib-pic img { width: 100%; height: 100%; object-fit: contain; }
+.lib-pic:hover { border-color: #bdb2a2; }
+.lib-pic.on { border-color: var(--orange, var(--orange)); background: var(--tint-warm); box-shadow: 0 0 0 2px #e56c3722; }
+.lib-pic.plain { color: var(--warm-grey); font-size: 11px; font-weight: 800; }
+.lib-aa { font-size: 15px; }
+.lib-note { margin: 6px 0 0; color: var(--muted, var(--muted)); font-size: 12px; }

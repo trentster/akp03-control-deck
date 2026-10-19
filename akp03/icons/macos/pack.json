@@ -1,0 +1,207 @@
+{
+  "id": "macos",
+  "name": "macOS",
+  "description": "Common macOS system tasks",
+  "author": "AKP03 icon pipeline",
+  "version": 1,
+  "licence": "MIT (Phosphor Icons, Copyright (c) 2023 Phosphor Icons)",
+  "tile_sizes": [
+    60,
+    180
+  ],
+  "coverage": 0.65,
+  "icons": [
+    {
+      "name": "finder",
+      "label": "Finder",
+      "section": "windows",
+      "hue": "#0ea5e9",
+      "action": "shell: open ~",
+      "source": "folder-open-fill"
+    },
+    {
+      "name": "brave",
+      "label": "Brave",
+      "section": "windows",
+      "hue": "#f97316",
+      "action": "shell: open -a Brave",
+      "source": "globe-hemisphere-west-fill"
+    },
+    {
+      "name": "spotlight",
+      "label": "Spotlight",
+      "section": "windows",
+      "hue": "#a78bfa",
+      "action": "cmd + space",
+      "source": "magnifying-glass-fill"
+    },
+    {
+      "name": "mission-control",
+      "label": "Mission Control",
+      "section": "system",
+      "hue": "#22c55e",
+      "action": "ctrl + up",
+      "source": "squares-four-fill"
+    },
+    {
+      "name": "launchpad",
+      "label": "Launchpad",
+      "section": "windows",
+      "hue": "#e879f9",
+      "action": "fn + f4",
+      "source": "rocket-launch-fill"
+    },
+    {
+      "name": "app-switcher",
+      "label": "App switcher",
+      "section": "system",
+      "hue": "#38bdf8",
+      "action": "cmd + tab",
+      "source": "arrows-left-right-fill"
+    },
+    {
+      "name": "new-window",
+      "label": "New window",
+      "section": "windows",
+      "hue": "#34d399",
+      "action": "cmd + n",
+      "source": "plus-square-fill"
+    },
+    {
+      "name": "close-window",
+      "label": "Close window",
+      "section": "windows",
+      "hue": "#f43f5e",
+      "action": "cmd + w",
+      "source": "x-circle-fill"
+    },
+    {
+      "name": "minimise",
+      "label": "Minimise",
+      "section": "windows",
+      "hue": "#facc15",
+      "action": "cmd + m",
+      "source": "caret-down-fill"
+    },
+    {
+      "name": "hide-app",
+      "label": "Hide app",
+      "section": "windows",
+      "hue": "#cbd5e1",
+      "action": "cmd + h",
+      "source": "eye-slash-fill"
+    },
+    {
+      "name": "quit-app",
+      "label": "Quit app",
+      "section": "windows",
+      "hue": "#ef4444",
+      "action": "cmd + q",
+      "source": "power-fill"
+    },
+    {
+      "name": "full-screen",
+      "label": "Full screen",
+      "section": "system",
+      "hue": "#06b6d4",
+      "action": "ctrl + cmd + f",
+      "source": "arrows-out-fill"
+    },
+    {
+      "name": "screenshot",
+      "label": "Screenshot",
+      "section": "system",
+      "hue": "#db2777",
+      "action": "cmd + shift + 4",
+      "source": "camera-fill"
+    },
+    {
+      "name": "screen-record",
+      "label": "Screen record",
+      "section": "system",
+      "hue": "#e11d48",
+      "action": "cmd + shift + 5",
+      "source": "record-fill"
+    },
+    {
+      "name": "lock",
+      "label": "Lock",
+      "section": "system",
+      "hue": "#7c3aed",
+      "action": "ctrl + cmd + q",
+      "source": "lock-fill"
+    },
+    {
+      "name": "sleep",
+      "label": "Sleep",
+      "section": "system",
+      "hue": "#6366f1",
+      "action": "shell: pmset sleepnow",
+      "source": "moon-fill"
+    },
+    {
+      "name": "do-not-disturb",
+      "label": "Do Not Disturb",
+      "section": "system",
+      "hue": "#f59e0b",
+      "action": "shell: shortcuts run",
+      "source": "bell-slash-fill"
+    },
+    {
+      "name": "desktop",
+      "label": "Desktop",
+      "section": "system",
+      "hue": "#5eead4",
+      "action": "fn + f11",
+      "source": "desktop-fill"
+    },
+    {
+      "name": "trash",
+      "label": "Trash",
+      "section": "system",
+      "hue": "#65a30d",
+      "action": "shell: open ~/.Trash",
+      "source": "trash-simple-fill"
+    },
+    {
+      "name": "eject",
+      "label": "Eject",
+      "section": "media",
+      "hue": "#c084fc",
+      "action": "media: eject",
+      "source": "eject-fill"
+    },
+    {
+      "name": "wi-fi",
+      "label": "Wi-Fi",
+      "section": "system",
+      "hue": "#14b8a6",
+      "action": "shell: networksetup",
+      "source": "wifi-high-fill"
+    },
+    {
+      "name": "bluetooth",
+      "label": "Bluetooth",
+      "section": "system",
+      "hue": "#60a5fa",
+      "action": "shell: blueutil -p",
+      "source": "bluetooth-fill"
+    },
+    {
+      "name": "brightness",
+      "label": "Brightness",
+      "section": "media",
+      "hue": "#fbaa24",
+      "action": "media: brightness",
+      "source": "sun-fill"
+    },
+    {
+      "name": "dark-mode",
+      "label": "Dark mode",
+      "section": "system",
+      "hue": "#a855f7",
+      "action": "shell: osascript",
+      "source": "circle-half-fill"
+    }
+  ]
+}

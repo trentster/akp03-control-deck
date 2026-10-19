@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AKP03 Control</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <link rel="stylesheet" href="/assets/shell.css">
+  <link rel="stylesheet" href="/assets/overrides.css">
+  <link rel="stylesheet" href="/assets/keypanel.css">
+<link rel="stylesheet" href="/assets/library.css">
+  <link rel="stylesheet" href="/assets/flow.css">
+<link rel="stylesheet" href="/assets/icons.css">
+<!-- Last, so the deck's own drawing owns the deck's controls on every page that
+     mounts it. -->
+<link rel="stylesheet" href="/assets/deckdraw.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="brand"><span class="mark">▪▪<br>▪▪</span><div><b>AKP03 Control</b></div></div>
+      <p class="nav-label">Workspace</p>
+      <nav>
+        <button class="nav active" data-view="deck">▦ <span>Deck</span></button>
+        <button class="nav" data-view="menus">☰ <span>Menus</span></button>
+        <button class="nav" data-view="icons">▣ <span>Icons</span></button>
+      </nav>
+      <!-- The deck's own settings, opened from where the deck's own state is reported.
+           A panel above the entry rather than a fourth page: what it holds belongs to the
+           deck, not to the page you happen to be on, so it must not become the loudest
+           thing in a rail that holds three pages. -->
+      <div class="rail-settings">
+        <button type="button" class="settings-entry" id="settingsEntry"
+          aria-expanded="false" aria-haspopup="dialog" aria-controls="settingsPanel">
+          <span class="settings-glyph" aria-hidden="true">⚙</span><span>Settings</span>
+        </button>
+        <section class="settings-panel card" id="settingsPanel" role="dialog" aria-label="Settings" hidden>
+          <div class="settings-head">
+            <b>Settings</b>
+            <button type="button" class="settings-close" id="settingsClose" aria-label="Close settings">✕</button>
+          </div>
+          <label class="screen-row">
+            <b>LCD Key Sleep</b>
+            <select id="screenBlankAfter"></select>
+          </label>
+        </section>
+      </div>
+      <div class="sample live-status wait" id="deckLive" aria-live="polite">
+        <b><span class="status-dot" id="deckDot" aria-hidden="true"></span><span id="deckState">Connecting…</span></b>
+        <p id="deckDetail">Reading live deck state from the local daemon.</p>
+      </div>
+    </aside>
+
+    <section class="shell">
+      <header>
+        <div><strong id="crumb">Deck</strong><span class="pill" id="sourcePill">Loading…</span>
+          <!-- The way to the guide: a small quiet question mark, opening in its own tab so
+               the deck you were working on is still there when you come back.  It opens the
+               part of the guide that answers for the page you are on; the script sets the
+               exact section as the pages change. -->
+          <a class="help-link" id="helpLink" href="/assets/guide.html#deck" target="_blank" rel="noopener"
+             title="Open the guide: the deck — what each control does, and what saving means">?</a>
+        </div>
+        <div class="save-bar">
+          <span id="notice" class="save-state" role="status" aria-live="polite">Loading the deck's saved configuration…</span>
+          <button id="discardChanges" class="quiet" type="button">Discard changes</button>
+          <button id="saveChanges" class="primary" type="button">Save to deck</button>
+        </div>
+      </header>
+      <main>
+        <section class="view active" id="deck">
+          <div class="permission-banner" id="permissionBanner" hidden>
+            <div>
+              <b id="permissionHeadline">Keyboard shortcuts cannot be sent yet</b>
+              <p id="permissionDetail" class="muted"></p>
+            </div>
+            <button type="button" class="primary" id="permissionRequest">Ask macOS for permission</button>
+          </div>
+          <div class="stage">
+            <p class="eyebrow">Physical layout</p>
+            <h1>Your deck, at a glance</h1>
+            <p class="muted">Choose an LCD key, one of the three buttons under them, or a dial, to assign what it does.</p>
+            <!-- The deck itself is drawn by deckdraw.js, the same drawing the Menus page
+                 mounts: this page holds its place, and says what each face shows. -->
+            <div class="deck-mount" id="deckDevice"></div>
+            <div id="fxChain" class="fx-chainwrap" hidden></div>
+            <section class="deck-mirror" data-mirror id="deckMirrorPanel" aria-label="What the physical deck is showing right now" aria-live="polite">
+              <div class="mirror-head">
+                <b>On the deck now</b>
+                <span class="mirror-layer" data-mirror-layer>Waiting for the daemon…</span>
+              </div>
+              <div class="mirror-keys" data-mirror-keys></div>
+            </section>
+          </div>
+          <aside class="inspector deck-inspector" aria-label="Selected control">
+            <!-- One panel, mounted twice: the deck's own answers for the selected key,
+                 and the second one answers for the button pressed in the nesting chain.
+                 Only one of the two is ever showing.  Both fill themselves, so this
+                 page holds their places and nothing else. -->
+            <div id="deckPanel" class="key-panel"></div>
+            <div id="fxButtonPanel" class="key-panel" hidden></div>
+          </aside>
+        </section>
+
+        
+
+        <section class="view" id="menus">
+          <div id="fxMenusRoot"></div>
+        </section>
+
+        <!-- The icons page renders itself in icons.js, the way the menus page renders
+             itself in flow.js. -->
+        <section class="view" id="icons">
+          <div id="iconsRoot"></div>
+        </section>
+        
+      </main>
+    </section>
+  </div>
+  <script src="/assets/library.js"></script>
+<script src="/assets/deckdraw.js"></script>
+<script src="/assets/app.js"></script>
+  <script src="/assets/keypanel.js"></script>
+  <script src="/assets/flow.js"></script>
+<script src="/assets/icons.js"></script>
+</body>
+</html>

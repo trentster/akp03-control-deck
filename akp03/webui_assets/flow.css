@@ -1,0 +1,246 @@
+/* ── Rehoused from overrides.css ────────────────────────────────────────────
+   These rules sit above this file's own rules, which is where they were in effect
+   before: this file loads after overrides.css, so its own rules still win what they
+   won.  They do now beat every sheet that loads between the two - check what they
+   compete with before reordering this block, because no test will stop you. */
+
+
+.menu-group.selected {
+  border-color: #d98a58;
+  box-shadow: 0 0 0 1px #d98a5833;
+}
+
+.menu-name b { display: block; font-size: 15px; }
+.menu-name small { display: block; color: #8a7f74; font-size: 12px; }
+
+/* The narrow-window fold of the Menus page's three-across canvas.  It is a rule about this
+   page's grid, so it lives with the page - above this file's own rules, where it can still
+   lose to them, exactly as it did when it sat in overrides.css and loaded third. */
+@media (max-width: 620px) {
+  .canvas .page-grid, .page-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The Menus page and the deck's nesting chain.
+   Every class is fx- prefixed so nothing here collides with the older views,
+   and the palette comes from the tokens overrides.css already defines. */
+
+/* ── Menus: a list of menus, the one you opened, and the button you clicked ── */
+#fxMenusRoot { display: grid; grid-template-columns: 180px minmax(0, 1fr) 420px; min-height: 0; height: 100%; }
+
+.fx-list { border-right: 1px solid var(--line, var(--line)); padding: 14px 10px; min-height: 0; overflow-y: auto; }
+.fx-new-menu { display: flex; align-items: center; gap: 7px; width: 100%; border: 0; background: transparent;
+  border-radius: 9px; padding: 8px 9px; font: inherit; font-size: 12.5px; font-weight: 700; color: #806f5d;
+  cursor: pointer; text-align: left; }
+.fx-new-menu:hover { background: #fffdf980; color: var(--orange-deep); }
+.fx-plus { font-size: 14px; line-height: 1; }
+.fx-rows { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
+/* A menu is a row of six keys, so that is what each row shows: a tiny picture of
+   the keys inside it. No button chrome — the open one is tinted with a left
+   accent mark, which is how a list shows where you are. */
+.fx-menu-entry { display: flex; align-items: center; gap: 9px; width: 100%; border: 0; background: transparent;
+  border-left: 3px solid transparent; border-radius: 9px; padding: 9px 9px 9px 8px; font: inherit;
+  text-align: left; cursor: pointer; }
+.fx-menu-entry:hover { background: #fffdf980; }
+.fx-menu-entry.on { background: var(--tint-warm); border-left-color: var(--orange, var(--orange)); }
+.fx-menu-glyph { display: grid; grid-template-columns: repeat(3, 4px); gap: 2px; flex: none; }
+.fx-menu-glyph i { width: 4px; height: 3px; border-radius: 1px; background: #b5a795; }
+.fx-menu-entry.on .fx-menu-glyph i { background: #e56c37b8; }
+.fx-menu-entry .fx-menu-name { min-width: 0; font-size: 13.5px; font-weight: 700; color: #514a43;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.fx-menu-entry.on .fx-menu-name { color: var(--orange-deep); }
+.fx-menu-entry .fx-chev { margin-left: auto; color: #bdb2a4; font-weight: 800; }
+.fx-menu-entry.on .fx-chev { color: var(--orange-deep); }.fx-nothing { color: var(--muted, var(--muted)); font-size: 12px; padding: 4px 6px; }
+
+.fx-canvas { padding: 16px 22px; min-width: 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.fx-head { display: flex; align-items: flex-start; gap: 12px; }
+.fx-title { margin: 3px 0 0; font-size: 26px; line-height: 1.1; }
+.fx-meta { margin-top: 4px; color: var(--muted, var(--muted)); font-size: 12px; }
+.fx-meta b { color: var(--warm-grey-deep); }
+.fx-menu-tool { margin-left: auto; display: flex; gap: 6px; }
+.fx-kebab { border: 1px solid var(--line-strong); background: var(--surface-raised); border-radius: 10px; padding: 7px 11px;
+  font: inherit; font-size: 12.5px; font-weight: 700; color: var(--warm-grey-deep); cursor: pointer; white-space: nowrap; }
+.fx-head .fx-meta { max-width: 46ch; }
+.fx-kebab:hover { background: var(--surface); }
+
+/* ── the button panel ──────────────────────────────────────────────────────
+   The panel's own look lives in keypanel.css, next to the markup that carries it.
+   All that is left here is where the Menus page puts it: a column with its own
+   hairline, scrolled independently so a long list of menus cannot push the panel
+   off the page.  One panel, mounted in three places, styled once. */
+.fx-insp { border-left: 1px solid var(--line, var(--line)); padding: 18px 18px 22px; min-height: 0; overflow-y: auto; min-width: 0; }
+/* (.fx-insp's own h2 rule was here.  The inspector holds the panel component now and
+   nothing else, and the panel carries its own heading inside its card.) */
+/* One label style for every small heading in the panel.  (.fx-rlabel used to lead
+   this rule for the Menus panel's own markup; that panel is the component now, so
+   its labels are .row-label like every other one.)  Only the spacing under a label
+   differs per panel, so only the spacing is declared per panel. */
+.summary-list dt,
+.key-panel .row-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #9a6b4c;
+}
+
+/* (.fx-rlabel lived here, spacing the Menus panel's own section labels.  Those
+   labels are the panel's .row-label now, spaced by keypanel.css with every other
+   one, so the rule went with the markup.) */
+
+/* ── the at-rest summary, both panels ─────────────────────────────────────────
+   A key's value is only ever a *name*, so both panels report the same four
+   facts in the same words - the kind of thing assigned, then Label, Shortcut and
+   Image.  One definition, so the two pages cannot drift apart. */
+.summary-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 0;
+}
+
+.summary-list dt { margin: 0; }
+
+.summary-list dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: #433c36;
+}
+
+.summary-list dd b { font-size: 14px; }
+
+/* `display: flex` on the dd above beats the browser's [hidden] rule, so a hidden summary
+   cell needs the same guard as every other toggled row in the app.  Without it the empty
+   Response cell keeps its place in the grid and the rows below slide one column across -
+   Icon's label was measuring in the value column and its picture in the label's. */
+.summary-list dt[hidden],
+.summary-list dd[hidden] { display: none; }
+
+/* Where a shortcut would be, one quiet line says why there is none: a blank cell
+   reads as a fault, an explanation does not. */
+.summary-list dd.summary-note { color: var(--faint); font-size: 11.5px; }
+
+/* A card's heading and that card's own way out, on one line.  This is the panel's
+   own heading row; nothing here is shared with markup that no longer exists. */
+.key-panel .row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Each part of a panel is its own card, and they are separated by the gap rather
+   than by a rule.  This is what stops a panel reading as one column of text: a
+   card says "these belong together", the space between says "this does not".
+   (.fx-group and .fx-sec were defined here but are in no markup any more: there is
+   one panel, and the card rule belongs to it alone.  A leftover selector is a
+   promise of a style that no longer has anything to style.) */
+.key-panel .panel-row {
+  border: 1px solid #f0e7db;
+  border-radius: 15px;
+  background: var(--surface, var(--surface));
+  padding: 13px 14px;
+}
+/* The chooser row's rules were here.  The Menus panel's rows are the deck key
+   panel's own now - .row-value and friends, one definition in keypanel.css - so
+   these were a second set for the same job and were deleted with it rather than
+   left behind to drift. */
+.fx-tools { display: flex; gap: 7px; margin-top: 12px; padding-top: 11px;
+  border-top: 1px solid var(--soft); flex-wrap: wrap; }
+.fx-tools button { border: 1px solid var(--line-strong); background: var(--surface-raised); border-radius: 9px; padding: 5px 9px;
+  font: inherit; font-size: 11.5px; font-weight: 700; color: var(--body); cursor: pointer; }
+.fx-tools button:hover { background: var(--surface); }
+.fx-tools button.fx-danger { color: #8c5b46; }
+/* The panel's Edit is the way in and out of the editors, so it reads as an action
+   rather than as one more quiet control - styled in keypanel.css with the rest of
+   the panel, since it is the panel's own button and not this page's. */
+.fx-pick { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 9px; padding: 5px 9px; font: inherit;
+  font-size: 11.5px; font-weight: 700; color: var(--warm-grey-deep); cursor: pointer; }
+.fx-pick:hover { border-color: var(--key-blue); }
+.fx-pick.on { background: var(--key-blue); border-color: var(--key-blue); color: var(--surface); }
+.fx-empty { border: 1px solid var(--line, var(--line)); border-radius: 13px; padding: 12px; color: var(--muted, var(--muted)); font-size: 12px; }
+.fx-spacer { flex: 1; }
+
+/* ── the deck chain: what a key opens, drawn as a path downward ── */
+.fx-chainwrap { display: flex; flex-direction: column; gap: 0; margin-top: 12px; }
+.fx-path { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; flex: none; font-size: 11.5px; font-weight: 700; color: #806f5d; margin-bottom: 8px; }
+.fx-step { background: var(--surface); border: 1px solid var(--line, var(--line)); border-radius: 99px; padding: 3px 10px;
+  color: var(--warm-grey-deep); cursor: pointer; font: inherit; font-size: 11.5px; font-weight: 700; }
+.fx-step.on { background: var(--tint-warm); border-color: #f0d3c0; color: var(--orange-deep); }
+.fx-step-sep { color: #bdb2a4; }
+.fx-chain { display: flex; flex-direction: column; gap: 0; overflow-y: auto; padding-right: 3px;
+  max-height: calc(100vh - 343px); }
+.fx-arrow { position: relative; height: 22px; flex: none; }
+.fx-elbow { position: absolute; top: 0; bottom: 0; width: 2px; }
+.fx-elbow i { position: absolute; inset: 0; background: var(--orange, var(--orange)); opacity: .55; border-radius: 2px; }
+.fx-elbow u { position: absolute; left: -4px; bottom: -1px; width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid var(--orange, var(--orange)); }
+.fx-cap { position: absolute; top: 0; font-size: 10px; font-weight: 800; color: var(--orange-deep); background: var(--tint-warm);
+  border-radius: 99px; padding: 2px 8px; white-space: nowrap; }
+.fx-level { border: 1px solid #f0d3c0; background: var(--surface, var(--surface)); border-radius: 15px; padding: 7px 11px 8px;
+  box-shadow: 0 6px 20px #e56c371a; flex: none; }
+.fx-lvlhead { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.fx-dot { width: 8px; height: 8px; border-radius: 99px; background: var(--orange, var(--orange)); flex: none; }
+.fx-lvlhead .fx-who { font-size: 13px; font-weight: 800; }
+.fx-tag { background: var(--soft, var(--soft)); color: #7d7166; border-radius: 99px; padding: 2px 8px; font-size: 10px; font-weight: 700; }
+.fx-tag.by { background: var(--tint-warm); color: var(--orange-deep); }
+.fx-lvlhead .fx-spacer { flex: 1; }
+.fx-link { border: 0; background: transparent; font: inherit; font-size: 11.5px; font-weight: 700; color: var(--teal, var(--teal));
+  cursor: pointer; text-decoration: underline; text-decoration-color: #2f7f7855; }
+.fx-back { border: 1px solid var(--line-strong); background: var(--surface-raised); border-radius: 8px; padding: 5px 9px; font: inherit;
+  font-size: 11px; font-weight: 700; color: var(--warm-grey-deep); cursor: pointer; }
+.fx-order { display: flex; gap: 6px; }
+.fx-slot { flex: 1; min-width: 0; border: 1px solid #e2d8cb; border-radius: 9px; background: #f9f5ef;
+  padding: 5px 7px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; text-align: left; position: relative; }
+.fx-slot:hover { background: var(--surface); }
+.fx-slot .fx-idx { font-size: 9px; color: var(--faint); font-weight: 800; }
+.fx-slot .fx-pic { font-size: 15px; line-height: 1; color: var(--warm-grey); }
+/* Big enough to read: the face is the whole point of the button, and at 22px the
+   words the deck draws on a tile were an unreadable smudge. */
+.fx-slot .fx-pic img { width: 40px; height: 40px; }
+.fx-slot .fx-name { font-size: 10.5px; font-weight: 700; color: var(--body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fx-slot .fx-opens { position: absolute; right: 6px; top: 5px; font-size: 9px; font-weight: 800; color: var(--orange-deep); }
+.fx-slot.on { border-color: var(--orange, var(--orange)); background: var(--tint-warm); box-shadow: 0 0 0 2px #e56c3722; }
+/* The item you came through to reach an open level: marked, but quieter than the
+   button you are actually on, so two highlighted tiles do not read as two choices. */
+.fx-slot.on.via { border-color: #edc3a6; background: var(--surface-raised); box-shadow: none; }
+.fx-slot.empty { border-style: dashed; background: transparent; color: var(--faint); }
+.fx-slot.empty .fx-name { color: var(--faint); font-weight: 600; }
+.fx-hint { margin: 11px 0 0; padding-top: 10px; border-top: 1px solid var(--soft);
+  color: var(--muted, var(--muted)); font-size: 11.5px; line-height: 1.45; }
+
+/* The deck drawing is one drawing at one size. Opening a chain never resizes it
+   and never moves it: the chain simply takes the place of the live mirror
+   underneath, and only deeper than two levels does it scroll inside .fx-chain. */
+#deck .eyebrow, #deck .stage > h1, #deck .stage > p.muted { display: none; }
+
+/* The one thing that does give way is the informational legend under the deck,
+   which would otherwise be half cut off by the viewport while a chain is open.
+   Nothing above it moves, and the drawing above it is untouched. */
+
+/* A narrow window must never push a column off the edge of the screen: the
+   panel moves under the menu instead of hanging off the right-hand side. */
+@media (max-width: 900px) {
+  #fxMenusRoot { grid-template-columns: 170px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .fx-list { grid-column: 1; grid-row: 1 / span 2; }
+  .fx-canvas { grid-column: 2; grid-row: 1; }
+  .fx-insp { grid-column: 2; grid-row: 2; border-left: 0; border-top: 1px solid var(--line);
+    max-height: 46vh; }
+}
+/* Renaming and deleting happen in the page, not in a browser dialog. */
+.fx-rename { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.fx-rename input { border: 1px solid var(--key-blue); border-radius: 10px; padding: 8px 10px; font: inherit;
+  font-size: 16px; font-weight: 700; color: var(--ink, var(--ink)); background: var(--surface); min-width: 220px; }
+.fx-kebab.is-primary { background: var(--teal, var(--teal)); border-color: var(--teal, var(--teal)); color: var(--surface); }
+.fx-kebab.fx-danger { color: #8c5b46; border-color: #f0d3c0; background: var(--tint-warm); }
+.fx-confirm { display: flex; align-items: center; gap: 10px; border: 1px solid #f0d3c0; background: #fffaf6;
+  border-radius: 14px; padding: 11px 13px; }
+.fx-confirm b { font-size: 13px; }
+.fx-confirm p { margin: 3px 0 0; color: #79523c; font-size: 11.5px; line-height: 1.45; max-width: 52ch; }
+.fx-confirm .fx-kebab { margin-left: 0; }
+.fx-confirm [data-fx-confirmdelete] { margin-left: auto; }
+
+/* A heading for screen readers where the visible card above already says it. */
