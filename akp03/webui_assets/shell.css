@@ -296,3 +296,11 @@
    dropdown that already says what it is. */
 .settings-panel .screen-row b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
 .settings-panel select { width: 100%; }
+/* Backup sits under the sleep setting in the same quiet voice: a heading in the small
+   grey the panel uses for field labels, two plain buttons, and one line that says what
+   happened - never a colour, never a dialog. */
+.settings-panel .backup-row { display: grid; gap: 8px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.settings-panel .backup-row b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
+.settings-panel .backup-actions { display: flex; gap: 8px; }
+.settings-panel .backup-actions button { white-space: nowrap; flex: 1 1 auto; padding-left: 6px; padding-right: 6px; }
+.settings-panel .backup-note { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--warm-grey); }

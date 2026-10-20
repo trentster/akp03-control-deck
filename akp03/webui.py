@@ -38,6 +38,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from . import artwork
 from . import actions_library
+from . import backup
 from . import iconpacks
 from .config import (
     DEFAULT_BLANK_AFTER_S,
@@ -874,6 +875,8 @@ def make_server(
                 self._icons_export()
             elif path.startswith("/api/icons/"):
                 self._icon(path)
+            elif path == "/api/backup":
+                self._backup()
             elif path == "/api/draft/diff":
                 self._draft_diff()
             elif path.startswith("/api/label/"):
@@ -972,6 +975,9 @@ def make_server(
                 except Exception as error:  # noqa: BLE001 - the editor shows the reason
                     self._json(HTTPStatus.OK, {"supported": True, "granted": False, "detail": str(error)})
                 return
+            if path == "/api/restore":
+                self._restore()
+                return
             if path == "/api/icons":
                 # Managing your own icons always answers, with the fresh library on
                 # success and with a reason the page can show when it refuses.
@@ -985,6 +991,93 @@ def make_server(
                 self._save()
             else:
                 self.send_error(HTTPStatus.NOT_FOUND)
+
+        def _backup(self) -> None:
+            """Hand back the whole setup as a file, and the pictures it needs.
+
+            The configuration inside is the *merged* document - what ``Save to deck``
+            would write - so a backup taken with unsaved edits still carries what the
+            person can see in the editor.  Nothing is written anywhere to make one.
+            """
+            if config is None:
+                self._json(HTTPStatus.CONFLICT, {
+                    "ok": False,
+                    "reason": "This editor is not attached to a daemon configuration, so there is nothing to back up.",
+                })
+                return
+            try:
+                merged = merge_draft_into_config(_read_config_text(config), store.get())
+                blob = backup.build_backup(merged, load_config(config), config)
+            except (ControlPlaneEditorError, ConfigError, OSError, backup.BackupError) as error:
+                self._json(HTTPStatus.BAD_REQUEST, {"ok": False, "reason": str(error)})
+                return
+            filename = f"akp03-backup-{datetime.now().strftime('%Y%m%d-%H%M')}.akp03"
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Type", "application/zip")
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+            self.send_header("Content-Length", str(len(blob)))
+            self.end_headers()
+            self.wfile.write(blob)
+
+        def _restore(self) -> None:
+            """Read a backup into the draft, and put its pictures back.
+
+            Order is deliberate.  The file is read and its configuration validated
+            *before* a single picture is written, because a backup that restored a set
+            and then failed to load would leave litter behind for no reason.  The
+            configuration itself only lands on the deck when the person presses Save.
+            """
+            if not can_save or config is None:
+                self._json(HTTPStatus.CONFLICT, {
+                    "ok": False,
+                    "reason": "This editor is not attached to a daemon configuration, so there is nothing to restore into.",
+                })
+                return
+            try:
+                blob = self._read_body(limit=backup.MAX_BACKUP_BYTES)
+                read = backup.read_backup(blob)
+            except (ValueError, backup.BackupError) as error:
+                self._json(HTTPStatus.BAD_REQUEST, {"ok": False, "reason": str(error) or "that file could not be read"})
+                return
+            with tempfile.TemporaryDirectory() as directory:
+                candidate = Path(directory) / "config.toml"
+                candidate.write_text(read.config_text, encoding="utf-8")
+                candidate.chmod(0o600)
+                try:
+                    load_config(candidate)
+                    draft = draft_from_config(candidate)
+                except (ConfigError, ControlPlaneEditorError, OSError) as error:
+                    self._json(HTTPStatus.BAD_REQUEST, {
+                        "ok": False,
+                        "reason": f"the backup's configuration does not load: {error}",
+                    })
+                    return
+            try:
+                pictures = backup.restore_pictures(read)
+            except (iconpacks.IconLibraryError, OSError) as error:
+                self._json(HTTPStatus.BAD_REQUEST, {
+                    "ok": False,
+                    "reason": f"the backup's pictures could not be put back: {error}",
+                })
+                return
+            staged = store.replace(draft_payload(draft))
+            replaced = " Its pictures were put back in your sets." if pictures else " It carried no pictures of its own."
+            self._json(HTTPStatus.OK, {
+                "ok": True,
+                "draft": draft_payload(staged),
+                "pictures": len(pictures),
+                "persistence": (
+                    f"{read.describe()} Loaded into the draft — nothing on the deck changes until you press Save."
+                    f"{replaced}"
+                ),
+            })
+
+        def _read_body(self, *, limit: int = 1_000_000) -> bytes:
+            """Read a bounded request body as raw bytes, for files rather than JSON."""
+            length = self.headers.get("Content-Length")
+            if length is None or not 0 <= int(length) <= limit:
+                raise ValueError("that file is larger than the app will accept")
+            return self.rfile.read(int(length))
 
         def _icons_export(self) -> None:
             """Hand back one set as a zip, ready to import somewhere else."""

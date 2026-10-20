@@ -26,6 +26,9 @@ you starts doing it.
   one set's pictures into another.
 - **It blanks when idle**, to spare the little screens, without ever blanking while a key
   is held.
+- **Backup and restore.** One file holds your setup and the pictures something points at,
+  so a menu comes back with its faces instead of blank keys. Restoring loads the draft —
+  nothing on the deck changes until you save.
 
 ## The three pages
 

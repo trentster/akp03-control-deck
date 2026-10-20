@@ -879,6 +879,77 @@ function closeSettings() {
   }
 }
 
+// Backup and restore live with the deck's other settings. A backup carries the whole
+// setup and the pictures something actually points at - a menu restored without them
+// would come back with blank keys, which is the reason they travel at all.
+function wireBackup() {
+  const save = $('#backupSave');
+  const restore = $('#backupRestore');
+  const file = $('#backupFile');
+  const note = $('#backupNote');
+  if (!save || !restore || !file) return;
+  const defaultNote = note ? note.textContent : '';
+  const say = text => { if (note) note.textContent = text; };
+
+  save.onclick = async () => {
+    say('Packing up your setup…');
+    try {
+      const response = await fetch('/api/backup');
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        say(body.reason || 'The backup could not be made.');
+        return;
+      }
+      const blob = await response.blob();
+      const header = response.headers.get('Content-Disposition') || '';
+      const named = header.match(/filename="([^"]+)"/);
+      const name = named ? named[1] : 'akp03-backup.akp03';
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      say(`Saved ${name} to your downloads.`);
+    } catch (error) {
+      say(`The backup could not be made: ${error.message}`);
+    }
+  };
+
+  restore.onclick = () => file.click();
+  file.onchange = async () => {
+    const chosen = file.files && file.files[0];
+    file.value = '';
+    if (!chosen) return;
+    say(`Reading ${chosen.name}…`);
+    try {
+      const response = await fetch('/api/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/zip' },
+        body: await chosen.arrayBuffer(),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body.ok) {
+        say(body.reason || 'That file could not be restored.');
+        return;
+      }
+      // The draft is the whole app's, so take the restored one and draw it again rather
+      // than reloading the page: the sentence saying what happened stays on screen.
+      state = body.draft;
+      dirty = true;
+      renderSource();
+      setStatus('saved', 'Restored into the draft — press Save to deck to keep it.');
+      render();
+      refreshArtworkStage();
+      say(body.persistence || defaultNote);
+    } catch (error) {
+      say(`That file could not be restored: ${error.message}`);
+    }
+  };
+}
+
 function wireSettings() {
   const panel = settingsPanel();
   const entry = $('#settingsEntry');
@@ -1470,6 +1541,7 @@ async function start() {
     button.onclick = () => showView(button.dataset.view);
   });
   wireSettings();
+  wireBackup();
   // The guide link answers for the page the app opens on, not only for the ones a
   // person clicks through afterwards.
   const showing = document.querySelector('.view.active');

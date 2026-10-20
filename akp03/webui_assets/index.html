@@ -43,6 +43,21 @@
             <b>LCD Key Sleep</b>
             <select id="screenBlankAfter"></select>
           </label>
+          <!-- Backup belongs to the whole deck, like the setting above it, so it lives
+               here rather than on any one page. A backup carries the setup and only the
+               pictures something points at, which is what makes a menu restore with its
+               faces instead of blank keys. -->
+          <div class="backup-row">
+            <b>Backup</b>
+            <div class="backup-actions">
+              <button type="button" class="quiet" id="backupSave">Back up</button>
+              <button type="button" class="quiet" id="backupRestore">Restore</button>
+              <input type="file" id="backupFile" accept=".akp03,.zip,application/zip" hidden>
+            </div>
+            <p class="backup-note" id="backupNote" role="status" aria-live="polite">
+              Keeps your setup and its pictures in one file.
+            </p>
+          </div>
         </section>
       </div>
       <div class="sample live-status wait" id="deckLive" aria-live="polite">
