@@ -888,8 +888,28 @@ function wireBackup() {
   const file = $('#backupFile');
   const note = $('#backupNote');
   if (!save || !restore || !file) return;
-  const defaultNote = note ? note.textContent : '';
-  const say = text => { if (note) note.textContent = text; };
+  const defaultNote = note ? note.textContent.trim() : '';
+  let noteTimer = null;
+  // Feedback is a moment, not a label. It says what happened for a few seconds, in a
+  // colour that reads at a glance, and then the line goes back to being the hint it was
+  // before. A message that stays turns into decoration and stops being read.
+  const say = (text, tone = '', detail = '') => {
+    if (!note) return;
+    if (noteTimer) clearTimeout(noteTimer);
+    // The server's reasons are written to be read mid-sentence; here the line starts
+    // with one, so it gets a capital like any other sentence would.
+    const sentence = text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+    note.textContent = sentence;
+    note.title = detail || sentence;
+    note.classList.toggle('is-good', tone === 'good');
+    note.classList.toggle('is-bad', tone === 'bad');
+    if (!tone) return;
+    noteTimer = setTimeout(() => {
+      note.textContent = defaultNote;
+      note.title = '';
+      note.classList.remove('is-good', 'is-bad');
+    }, 6000);
+  };
 
   save.onclick = async () => {
     say('Packing up your setup…');
@@ -897,7 +917,7 @@ function wireBackup() {
       const response = await fetch('/api/backup');
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        say(body.reason || 'The backup could not be made.');
+        say(body.reason || 'The backup could not be made.', 'bad');
         return;
       }
       const blob = await response.blob();
@@ -912,9 +932,9 @@ function wireBackup() {
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 2000);
-      say(`Saved ${name} to your downloads.`);
+      say('Backed up. The file is in your downloads.', 'good', `${name} was saved to your downloads.`);
     } catch (error) {
-      say(`The backup could not be made: ${error.message}`);
+      say(`The backup could not be made: ${error.message}`, 'bad');
     }
   };
 
@@ -932,7 +952,7 @@ function wireBackup() {
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || !body.ok) {
-        say(body.reason || 'That file could not be restored.');
+        say(body.reason || 'That file could not be restored.', 'bad');
         return;
       }
       // The draft is the whole app's, so take the restored one and draw it again rather
@@ -943,9 +963,9 @@ function wireBackup() {
       setStatus('saved', 'Restored into the draft — press Save to deck to keep it.');
       render();
       refreshArtworkStage();
-      say(body.persistence || defaultNote);
+      say('Restored. Save to deck to keep it.', 'good', body.persistence || '');
     } catch (error) {
-      say(`That file could not be restored: ${error.message}`);
+      say(`That file could not be restored: ${error.message}`, 'bad');
     }
   };
 }

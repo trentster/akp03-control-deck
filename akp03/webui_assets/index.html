@@ -43,20 +43,21 @@
             <b>LCD Key Sleep</b>
             <select id="screenBlankAfter"></select>
           </label>
-          <!-- Backup belongs to the whole deck, like the setting above it, so it lives
-               here rather than on any one page. A backup carries the setup and only the
-               pictures something points at, which is what makes a menu restore with its
-               faces instead of blank keys. -->
-          <div class="backup-row">
-            <b>Backup</b>
-            <div class="backup-actions">
-              <button type="button" class="quiet" id="backupSave">Back up</button>
-              <button type="button" class="quiet" id="backupRestore">Restore</button>
-              <input type="file" id="backupFile" accept=".akp03,.zip,application/zip" hidden>
+          <!-- Backup belongs to the whole deck, like the setting above it. One row: the
+               name, and two compact chips that fit in the panel's own width. The line
+               under them is the hint, and it becomes the answer for a moment when a
+               backup is written or a restore is refused, then goes back to being the
+               hint - feedback should not become a permanent label. -->
+          <div class="settings-group">
+            <div class="settings-group-head">
+              <b>Backup</b>
+              <span class="backup-actions">
+                <button type="button" class="chip" id="backupSave">Back up</button>
+                <button type="button" class="chip" id="backupRestore" title="Restore a setup from a backup file">Restore</button>
+                <input type="file" id="backupFile" accept=".akp03,.zip,application/zip" hidden>
+              </span>
             </div>
-            <p class="backup-note" id="backupNote" role="status" aria-live="polite">
-              Keeps your setup and its pictures in one file.
-            </p>
+            <p class="settings-note" id="backupNote" role="status" aria-live="polite">Keeps your setup and its pictures in one file.</p>
           </div>
         </section>
       </div>

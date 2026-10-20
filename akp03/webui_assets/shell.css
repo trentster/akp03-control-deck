@@ -296,11 +296,39 @@
    dropdown that already says what it is. */
 .settings-panel .screen-row b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
 .settings-panel select { width: 100%; }
-/* Backup sits under the sleep setting in the same quiet voice: a heading in the small
-   grey the panel uses for field labels, two plain buttons, and one line that says what
-   happened - never a colour, never a dialog. */
-.settings-panel .backup-row { display: grid; gap: 8px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--rule); }
-.settings-panel .backup-row b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
-.settings-panel .backup-actions { display: flex; gap: 8px; }
-.settings-panel .backup-actions button { white-space: nowrap; flex: 1 1 auto; padding-left: 6px; padding-right: 6px; }
-.settings-panel .backup-note { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--warm-grey); }
+/* A second group in the panel: a hairline in the panel's own rule colour, the name on the
+   left and its actions on the right, so two controls cost one row instead of three. */
+.settings-panel .settings-group {
+  display: grid;
+  gap: 7px;
+  margin-top: 6px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+/* The rail is only wide enough for the name and its actions if they take turns, so the
+   name sits on its own line and the two chips sit under it. Sharing a line pushed the
+   pair past the panel's edge, which is what made an earlier version look broken. */
+.settings-panel .settings-group-head { display: grid; gap: 6px; }
+.settings-panel .settings-group-head b { font-size: 13px; font-weight: 500; color: var(--warm-grey); }
+.settings-panel .backup-actions { display: flex; gap: 6px; }
+/* Small pill buttons, the way a compact panel should offer a pair of actions: a full
+   border and a raised surface, not a dashed box that reads as a drop zone. */
+.settings-panel .chip {
+  padding: 3px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--warm-grey-deep);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.55;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.settings-panel .chip:hover { background: #f0eae0; color: #57503f; }
+.settings-panel .chip:focus-visible { outline: 2px solid #b8461c; outline-offset: 2px; }
+/* The line is the hint until something happens, then the answer for a moment. */
+.settings-panel .settings-note { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--warm-grey); }
+.settings-panel .settings-note.is-good { color: #2b7a4b; font-weight: 500; }
+.settings-panel .settings-note.is-bad { color: #b8461c; font-weight: 500; }
